@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>QUnit Example</title>
+	<link rel="stylesheet" href="qunit/qunit.css">
+    <script src="js/common.js"></script>
+    <script src="js/memory.js"></script>
+    <script src="js/mmixcommands.js"></script>
+    <script src="js/processor.js"></script>
+</head>
+<body>
+	<div id="qunit"></div>
+
+	<script src="qunit/qunit.js"></script>
+    <script src="tests/st_ld_set.js"></script>
+	<!--script>
+	test( "MMIX machine", function() {
+		var mac = new MMIXMachine(1 << 9, ops);
+		ok(mac.makeASMfrom8HEX("22040302") === "ADDU $04, $03, $02", "Disassembler passed!");
+
+		ok(mac.make8HEXfromASM("setl $0, 0") === "e3000000", "SETL compile passed!")
+
+		mac.runASMCMD("setl $0, 0");
+		mac.runASMCMD("setl $1, 3");
+		ops.p[ops.n2o.setl](mac, 2, 4);
+
+		ok(mac.reg[1][0] == 3 && mac.reg[1][1] == 0 && mac.reg[1][2] == 0 && mac.reg[1][3] == 0, "SETL passed!");
+
+		ops.p[ops.n2o.ldb](mac, 3, 0, 2);
+		mac.runASMCMD("addu $4, $3, $2");
+		ops.p[ops.n2o.stb](mac, 4, 0, 0);
+
+		ok(mac.mem[0] === 8, "ADDU passed!");
+	});
+	</script-->
+</body>
+</html>
