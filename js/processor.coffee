@@ -283,6 +283,21 @@ class shared.MMIXProcessor
       Y = (command >>>  8) & 0xFF
       Z = (command >>>  0) & 0xFF
       @coms[opcode](X, Y, Z)
+    else if @comstypes[opcode] is octypes.Ror
+      $X_i = (command >>> 16) & 0xFF
+      Y = (command >>>  8) & 0xFF
+      $Z_i  = (command >>>  0) & 0xFF
+      $X = @regs.getOcta($X_i)
+      $Z = @regs.getOcta($Z_i)
+      @coms[opcode]($X, Y, $Z)
+      @regs.setOcta($X_i, $X)
+    else if @comstypes[opcode] is octypes.Rob
+      $X_i = (command >>> 16) & 0xFF
+      Y = (command >>>  8) & 0xFF
+      Z  = (command >>>  0) & 0xFF
+      $X = @regs.getOcta($X_i)
+      @coms[opcode]($X, Y, Z)
+      @regs.setOcta($X_i, $X)
     else
       throw "not implemented"
 

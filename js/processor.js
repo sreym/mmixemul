@@ -310,6 +310,21 @@
         Y = (command >>> 8) & 0xFF;
         Z = (command >>> 0) & 0xFF;
         return this.coms[opcode](X, Y, Z);
+      } else if (this.comstypes[opcode] === octypes.Ror) {
+        $X_i = (command >>> 16) & 0xFF;
+        Y = (command >>> 8) & 0xFF;
+        $Z_i = (command >>> 0) & 0xFF;
+        $X = this.regs.getOcta($X_i);
+        $Z = this.regs.getOcta($Z_i);
+        this.coms[opcode]($X, Y, $Z);
+        return this.regs.setOcta($X_i, $X);
+      } else if (this.comstypes[opcode] === octypes.Rob) {
+        $X_i = (command >>> 16) & 0xFF;
+        Y = (command >>> 8) & 0xFF;
+        Z = (command >>> 0) & 0xFF;
+        $X = this.regs.getOcta($X_i);
+        this.coms[opcode]($X, Y, Z);
+        return this.regs.setOcta($X_i, $X);
       } else {
         throw "not implemented";
       }

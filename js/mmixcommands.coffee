@@ -2,6 +2,21 @@ DEBUG = true
 
 shared = window
 
+roundBy = (val, rndMeth, rndMethDefault = 1) ->
+  if rndMeth is 0 then rndMeth = rndMethDefault
+  switch rndMeth
+    when 0 then Math.round(val)
+    when 1
+      Z = (
+        if val >= 0
+        then Math.floor(val)
+        else Math.ceil(val)
+      )
+    when 2 then Math.ceil(val)
+    when 3 then Math.floor(val)
+    when 4 then Math.round(val)
+    else throw "wrong round method"
+
 class shared.MMIXCommands
   constructor: (memory, registers, processor) ->
     @mem = memory
@@ -14,21 +29,55 @@ class shared.MMIXCommands
       @processor.r.break = 1
 
   fcmp: ($X, $Y, $Z) =>
+    $X.hbyte = 0
+    Y = $Y.getDouble()
+    Z = $Z.getDouble()
+    if Y < Z
+      $X.lbyte = 0xFFFFFFFF
+    else if Y > Z
+      $X.lbyte = 1
+    else
+      $X.lbyte = 0
 
+  fun:  ($X, $Y, $Z) =>
+    $X.hbyte = 0
+    Y = $Y.getDouble()
+    Z = $Z.getDouble()
+    if Y is NaN or Z is NaN
+      $X.lbyte = 1
+    else if Y > Z
+      $X.lbyte = 0
 
-  fun:  (X, Y, Z) =>
-
-  feql: (X, Y, Z) =>
+  feql: ($X, $Y, $Z) =>
+    $X.hbyte = 0
+    Y = $Y.getDouble()
+    Z = $Z.getDouble()
+    if Y is Z
+      $X.lbyte = 1
+    else if Y > Z
+      $X.lbyte = 0
 
   fadd: ($X, $Y, $Z) =>
     $X.setDouble($Y.getDouble() + $Z.getDouble())
 
-  fix:  (X, Y, Z) =>
+  fix:  ($X, Y, $Z) =>
+    Z = $Z.getDouble()
+    Z = roundBy(Z, Y)
+    if Z < -Math.pow(2, 63) or Z > Math.pow(2, 63)
+      throw "wrong number in FIX"
+    $X.lbyte = Z & 0xFFFFFFFF
+    $X.hbyte = (Z / Math.pow(2, 32)) & 0xFFFFFFFF
+    if Z < 0
+      $X.assign($X.neg().add(1))
 
-  fsub: (X, Y, Z) =>
+  fsub: ($X, $Y, $Z) =>
     $X.setDouble($Y.getDouble() - $Z.getDouble())
 
-  fixu: (X, Y, Z) =>
+  fixu: ($X, Y, $Z) =>
+    Z = $Z.getDouble()
+    Z = roundBy(Z, Y)
+    $X.lbyte = Z & 0xFFFFFFFF
+    $X.hbyte = (Z / Math.pow(2, 32)) & 0xFFFFFFFF
 
   flot: (X, Y, Z) =>
 
@@ -38,7 +87,7 @@ class shared.MMIXCommands
 
   sflotu: (X, Y, Z) =>
 
-  fmul: (X, Y, Z) =>
+  fmul: ($X, $Y, $Z) =>
     $X.setDouble($Y.getDouble() * $Z.getDouble())
 
   fcmpe: (X, Y, Z) =>
@@ -47,15 +96,33 @@ class shared.MMIXCommands
 
   feqle: (X, Y, Z) =>
 
-  fdiv: (X, Y, Z) =>
+  fdiv: ($X, $Y, $Z) =>
     $X.setDouble($Y.getDouble() / $Z.getDouble())
 
 
-  fsqrt: (X, Y, Z) =>
+  fsqrt: ($X, Y, $Z) =>
+    Z = $Z.getDouble()
+    Z = Math.sqrt(Z)
+    if Y > 1
+      Z = roundBy(Z, Y)
+    $X.setDouble(Z)
 
-  frem: (X, Y, Z) =>
+  frem: ($X, $Y, $Z) =>
+    Y = $Y.getDouble()
+    Z = $Z.getDouble()
 
-  fint: (X, Y, Z) =>
+    n1 = Math.ceil(Y / Z)
+    n2 = Math.floor(Y / Z)
+    if Math.abs(Y / Z - (Y - n1 * Z)) < Math.abs(Y / Z - (Y - n2 * Z))
+      res = n1
+    else res = n2
+
+    $X.setInt(res)
+
+  fint: ($X, Y, $Z) =>
+    Z = $Z.getDouble()
+    Z = roundBy(Z, Y)
+    $X.setDouble(Z)
 
   # 18 - 1F
   mulu: ($X, $Y_val, $Z_val, exc = null) =>

@@ -75,6 +75,15 @@ class shared.OctaByte
     @lbyte = (i8Array[4] << 24) + (i8Array[5] << 16) + (i8Array[6] << 8) + (i8Array[7] << 0)
 
 
+  setInt: (val, signed = true) ->
+    nVal = if val > 0 then val else -val
+    @lbyte = nVal & 0xFFFFFFFF
+    @hbyte = (nVal / (Math.pow(2, 32))) & 0xFFFFFFFF
+
+    if signed and val < 0
+        @assign(@neg().add(1))
+
+
   getDouble: () ->
     i8Array = new Uint8Array(8)
     i8Array[0] = (@hbyte >>> 24) && 0xFF

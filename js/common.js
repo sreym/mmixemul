@@ -133,6 +133,20 @@
       return this.lbyte = (i8Array[4] << 24) + (i8Array[5] << 16) + (i8Array[6] << 8) + (i8Array[7] << 0);
     };
 
+    OctaByte.prototype.setInt = function(val, signed) {
+      var nVal;
+
+      if (signed == null) {
+        signed = true;
+      }
+      nVal = val > 0 ? val : -val;
+      this.lbyte = nVal & 0xFFFFFFFF;
+      this.hbyte = (nVal / (Math.pow(2, 32))) & 0xFFFFFFFF;
+      if (signed && val < 0) {
+        return this.assign(this.neg().add(1));
+      }
+    };
+
     OctaByte.prototype.getDouble = function() {
       var i8Array;
 
