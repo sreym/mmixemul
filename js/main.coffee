@@ -42,6 +42,12 @@ $().ready () ->
         unless ((val >>> 8)  & 0xFF) < 32 then lC = String.fromCharCode((val >>> 8)  & 0xFF) else lC = '◦'
         unless ((val >>> 0)  & 0xFF) < 32 then lD = String.fromCharCode((val >>> 0)  & 0xFF) else lD = '◦'
         linetext = lA + lB + lC + lD
+      when "float"
+        val = shared.mem.getOcta(i)
+        linetext = val.getDouble()
+      when "bool"
+        val = shared.mem.getTetra(i)
+        linetext = val.toString(2)
       else linetext = "not implemented yet"
     line.html("<span class='data'>" + linetext + "</span> <span class='type'>(" + linetype + ")</span>")
 

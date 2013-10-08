@@ -50,6 +50,7 @@ class shared.MMIXProcessor
   r:
     curEx: 0
     break: 0
+    rE: 0.00001
 
   run: () ->
     @r.curEx = 0

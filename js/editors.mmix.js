@@ -37,6 +37,7 @@
   plusEditing = function(block_div, i) {
     var nval;
 
+    console.log(i);
     nval = block_div.data('editing') + i;
     if ((0 <= nval && nval < block_div.data("options").size * 2)) {
       block_div.data('editing', nval);
@@ -49,8 +50,8 @@
   pushToEdit = function(block_div, val) {
     var editing, item;
 
-    if ((48 <= val && val <= 57) || (65 <= val && val <= 70)) {
-      val -= val < 58 ? 48 : 55;
+    if ((48 <= val && val <= 57) || (65 <= val && val <= 70) || (96 <= val && val <= 105)) {
+      val -= val < 58 ? 48 : val > 95 ? 96 : 55;
       item = getEditItem(block_div);
       editing = block_div.data('editing');
       if (editing % 2 === 0) {

@@ -54,7 +54,7 @@ class shared.MMIXCommands
     Z = $Z.getDouble()
     if Y is Z
       $X.lbyte = 1
-    else if Y > Z
+    else
       $X.lbyte = 0
 
   fadd: ($X, $Y, $Z) =>
@@ -79,26 +79,59 @@ class shared.MMIXCommands
     $X.lbyte = Z & 0xFFFFFFFF
     $X.hbyte = (Z / Math.pow(2, 32)) & 0xFFFFFFFF
 
-  flot: (X, Y, Z) =>
+  flot: ($X, Y, $Z_val) =>
+    if not $Z instanceof shared.OctaByte
+      $Z = new shared.OctaByte(0, $Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign($Z_val)
 
-  flotu: (X, Y, Z) =>
+    if $Z.is_neg()
+      neg = true
+      $Z.assign($Z.neg().add(1))
+    else
+      neg = false
 
-  sflot: (X, Y, Z) =>
+  flotu: ($X, Y, $Z) =>
 
-  sflotu: (X, Y, Z) =>
+  sflot: ($X, Y, $Z) =>
+
+  sflotu: ($X, Y, $Z) =>
 
   fmul: ($X, $Y, $Z) =>
     $X.setDouble($Y.getDouble() * $Z.getDouble())
 
-  fcmpe: (X, Y, Z) =>
+  fcmpe: ($X, $Y, $Z) =>
+    $X.hbyte = 0
+    Y = $Y.getDouble()
+    Z = $Z.getDouble()
+    if Y - @processor.r.rE < Z
+      $X.lbyte = 0xFFFFFFFF
+    else if Y + @processor.r.rE > Z
+      $X.lbyte = 1
+    else
+      $X.lbyte = 0
 
-  fune: (X, Y, Z) =>
+  fune: ($X, $Y, $Z) =>
+    $X.hbyte = 0
+    Y = $Y.getDouble()
+    Z = $Z.getDouble()
+    if Y is NaN or Z is NaN
+      $X.lbyte = 1
+    else if Y > Z
+      $X.lbyte = 0
 
-  feqle: (X, Y, Z) =>
+  feqle: ($X, $Y, $Z) =>
+    $X.hbyte = 0
+    Y = $Y.getDouble()
+    Z = $Z.getDouble()
+    if Y + @processor.r.rE < Z and Y - @processor.r.rE > Z
+      $X.lbyte = 1
+    else
+      $X.lbyte = 0
 
   fdiv: ($X, $Y, $Z) =>
     $X.setDouble($Y.getDouble() / $Z.getDouble())
-
 
   fsqrt: ($X, Y, $Z) =>
     Z = $Z.getDouble()

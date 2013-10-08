@@ -23,6 +23,7 @@ updateEditView = (block_div) ->
     block_div.find("span.editing").removeClass("editing")
 
 plusEditing = (block_div, i) ->
+  console.log i
   nval = block_div.data('editing') + i
   if 0 <= nval < block_div.data("options").size * 2
     block_div.data('editing', nval)
@@ -30,9 +31,10 @@ plusEditing = (block_div, i) ->
     stopEdit(block_div)
   updateEditView(block_div)
 
+
 pushToEdit = (block_div, val) ->
-  if 48 <= val <= 57 or 65 <= val <= 70
-    val -= if val < 58 then 48 else 55
+  if 48 <= val <= 57 or 65 <= val <= 70 or 96 <= val <= 105
+    val -= if val < 58 then 48 else if val > 95 then 96 else 55
     item = getEditItem(block_div)
     editing = block_div.data('editing')
     if editing % 2  is 0

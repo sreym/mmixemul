@@ -75,6 +75,14 @@
           }
           linetext = lA + lB + lC + lD;
           break;
+        case "float":
+          val = shared.mem.getOcta(i);
+          linetext = val.getDouble();
+          break;
+        case "bool":
+          val = shared.mem.getTetra(i);
+          linetext = val.toString(2);
+          break;
         default:
           linetext = "not implemented yet";
       }

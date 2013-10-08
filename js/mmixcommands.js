@@ -126,7 +126,7 @@
       Z = $Z.getDouble();
       if (Y === Z) {
         return $X.lbyte = 1;
-      } else if (Y > Z) {
+      } else {
         return $X.lbyte = 0;
       }
     };
@@ -163,23 +163,73 @@
       return $X.hbyte = (Z / Math.pow(2, 32)) & 0xFFFFFFFF;
     };
 
-    MMIXCommands.prototype.flot = function(X, Y, Z) {};
+    MMIXCommands.prototype.flot = function($X, Y, $Z_val) {
+      var $Z, neg;
 
-    MMIXCommands.prototype.flotu = function(X, Y, Z) {};
+      if (!$Z instanceof shared.OctaByte) {
+        $Z = new shared.OctaByte(0, $Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign($Z_val);
+      }
+      if ($Z.is_neg()) {
+        neg = true;
+        return $Z.assign($Z.neg().add(1));
+      } else {
+        return neg = false;
+      }
+    };
 
-    MMIXCommands.prototype.sflot = function(X, Y, Z) {};
+    MMIXCommands.prototype.flotu = function($X, Y, $Z) {};
 
-    MMIXCommands.prototype.sflotu = function(X, Y, Z) {};
+    MMIXCommands.prototype.sflot = function($X, Y, $Z) {};
+
+    MMIXCommands.prototype.sflotu = function($X, Y, $Z) {};
 
     MMIXCommands.prototype.fmul = function($X, $Y, $Z) {
       return $X.setDouble($Y.getDouble() * $Z.getDouble());
     };
 
-    MMIXCommands.prototype.fcmpe = function(X, Y, Z) {};
+    MMIXCommands.prototype.fcmpe = function($X, $Y, $Z) {
+      var Y, Z;
 
-    MMIXCommands.prototype.fune = function(X, Y, Z) {};
+      $X.hbyte = 0;
+      Y = $Y.getDouble();
+      Z = $Z.getDouble();
+      if (Y - this.processor.r.rE < Z) {
+        return $X.lbyte = 0xFFFFFFFF;
+      } else if (Y + this.processor.r.rE > Z) {
+        return $X.lbyte = 1;
+      } else {
+        return $X.lbyte = 0;
+      }
+    };
 
-    MMIXCommands.prototype.feqle = function(X, Y, Z) {};
+    MMIXCommands.prototype.fune = function($X, $Y, $Z) {
+      var Y, Z;
+
+      $X.hbyte = 0;
+      Y = $Y.getDouble();
+      Z = $Z.getDouble();
+      if (Y === NaN || Z === NaN) {
+        return $X.lbyte = 1;
+      } else if (Y > Z) {
+        return $X.lbyte = 0;
+      }
+    };
+
+    MMIXCommands.prototype.feqle = function($X, $Y, $Z) {
+      var Y, Z;
+
+      $X.hbyte = 0;
+      Y = $Y.getDouble();
+      Z = $Z.getDouble();
+      if (Y + this.processor.r.rE < Z && Y - this.processor.r.rE > Z) {
+        return $X.lbyte = 1;
+      } else {
+        return $X.lbyte = 0;
+      }
+    };
 
     MMIXCommands.prototype.fdiv = function($X, $Y, $Z) {
       return $X.setDouble($Y.getDouble() / $Z.getDouble());
