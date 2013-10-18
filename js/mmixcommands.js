@@ -434,7 +434,7 @@
       var addr;
 
       addr = $Y.add($Z);
-      return this.mem.setByte(addr, $X.lbyte & 0xFF);
+      return this.mem.setByte(addr.lbyte, $X.lbyte & 0xFF);
     };
 
     MMIXCommands.prototype.stw = function($X, $Y, $Z) {
@@ -478,35 +478,91 @@
       return this.mem.setOcta(addr.lbyte, $X);
     };
 
-    MMIXCommands.prototype.or = function($X, $Y, $Z) {
+    MMIXCommands.prototype.or = function($X, $Y, Z) {
+      var $Z;
+
+      if (!Z instanceof shared.OctaByte) {
+        $Z = new shared.OctaByte(0, Z);
+      } else {
+        $Z = new shared.OctaByte(Z.hbyte, Z.lbyte);
+      }
       return $X.assign($Y.or($Z));
     };
 
-    MMIXCommands.prototype.orn = function($X, $Y, $Z) {
+    MMIXCommands.prototype.orn = function($X, $Y, Z) {
+      var $Z;
+
+      if (!Z instanceof shared.OctaByte) {
+        $Z = new shared.OctaByte(0, Z);
+      } else {
+        $Z = new shared.OctaByte(Z.hbyte, Z.lbyte);
+      }
       return $X.assign($Y.or($Z.neg()));
     };
 
-    MMIXCommands.prototype.nor = function($X, $Y, $Z) {
+    MMIXCommands.prototype.nor = function($X, $Y, Z) {
+      var $Z;
+
+      if (!Z instanceof shared.OctaByte) {
+        $Z = new shared.OctaByte(0, Z);
+      } else {
+        $Z = new shared.OctaByte(Z.hbyte, Z.lbyte);
+      }
       return $X.assign($Y.or($Z).neg());
     };
 
-    MMIXCommands.prototype.xor = function($X, $Y, $Z) {
+    MMIXCommands.prototype.xor = function($X, $Y, Z) {
+      var $Z;
+
+      if (!Z instanceof shared.OctaByte) {
+        $Z = new shared.OctaByte(0, Z);
+      } else {
+        $Z = new shared.OctaByte(Z.hbyte, Z.lbyte);
+      }
       return $X.assign($Y.xor($Z));
     };
 
-    MMIXCommands.prototype.and = function($X, $Y, $Z) {
+    MMIXCommands.prototype.and = function($X, $Y, Z) {
+      var $Z;
+
+      if (!Z instanceof shared.OctaByte) {
+        $Z = new shared.OctaByte(0, Z);
+      } else {
+        $Z = new shared.OctaByte(Z.hbyte, Z.lbyte);
+      }
       return $X.assign($Y.and($Z));
     };
 
-    MMIXCommands.prototype.andn = function($X, $Y, $Z) {
+    MMIXCommands.prototype.andn = function($X, $Y, Z) {
+      var $Z;
+
+      if (!Z instanceof shared.OctaByte) {
+        $Z = new shared.OctaByte(0, Z);
+      } else {
+        $Z = new shared.OctaByte(Z.hbyte, Z.lbyte);
+      }
       return $X.assign($Y.and($Z.neg()));
     };
 
-    MMIXCommands.prototype.nand = function($X, $Y, $Z) {
+    MMIXCommands.prototype.nand = function($X, $Y, Z) {
+      var $Z;
+
+      if (!Z instanceof shared.OctaByte) {
+        $Z = new shared.OctaByte(0, Z);
+      } else {
+        $Z = new shared.OctaByte(Z.hbyte, Z.lbyte);
+      }
       return $X.assign($Y.and($Z).neg());
     };
 
-    MMIXCommands.prototype.nxor = function($X, $Y, $Z) {
+    MMIXCommands.prototype.nxor = function($X, $Y, Z) {
+      var $Z;
+
+      if (!Z instanceof shared.OctaByte) {
+        $Z = new shared.OctaByte(0, Z);
+      } else {
+        $Z = new shared.OctaByte(Z.hbyte, Z.lbyte);
+      }
       return $X.assign($Y.xor($Z).neg());
     };
 

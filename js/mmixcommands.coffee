@@ -278,7 +278,7 @@ class shared.MMIXCommands
       excOfOverflow = 0
   stbu: ($X, $Y, $Z) =>
     addr = $Y.add($Z)
-    @mem.setByte(addr, $X.lbyte & 0xFF)
+    @mem.setByte(addr.lbyte, $X.lbyte & 0xFF)
   stw: ($X, $Y, $Z) =>
     addr = $Y.add($Z)
     @mem.setWyde(addr.lbyte, $X.lbyte & 0xFFFF)
@@ -300,21 +300,61 @@ class shared.MMIXCommands
     @mem.setOcta(addr.lbyte, $X)
 
   # C0 - CF
-  or : ($X, $Y, $Z) => $X.assign($Y.or($Z))
+  or : ($X, $Y, Z) =>
+    if not Z instanceof shared.OctaByte
+      $Z = new shared.OctaByte(0, Z)
+    else
+      $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
+    $X.assign($Y.or($Z))
 
-  orn: ($X, $Y, $Z) => $X.assign($Y.or($Z.neg()))
+  orn: ($X, $Y, Z) =>
+    if not Z instanceof shared.OctaByte
+      $Z = new shared.OctaByte(0, Z)
+    else
+      $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
+    $X.assign($Y.or($Z.neg()))
 
-  nor: ($X, $Y, $Z) => $X.assign($Y.or($Z).neg())
+  nor: ($X, $Y, Z) =>
+    if not Z instanceof shared.OctaByte
+      $Z = new shared.OctaByte(0, Z)
+    else
+      $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
+    $X.assign($Y.or($Z).neg())
 
-  xor: ($X, $Y, $Z) => $X.assign($Y.xor($Z))
+  xor: ($X, $Y, Z) =>
+    if not Z instanceof shared.OctaByte
+      $Z = new shared.OctaByte(0, Z)
+    else
+      $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
+    $X.assign($Y.xor($Z))
 
-  and: ($X, $Y, $Z) => $X.assign($Y.and($Z))
+  and: ($X, $Y, Z) =>
+    if not Z instanceof shared.OctaByte
+      $Z = new shared.OctaByte(0, Z)
+    else
+      $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
+    $X.assign($Y.and($Z))
 
-  andn: ($X, $Y, $Z) => $X.assign($Y.and($Z.neg()))
+  andn: ($X, $Y, Z) =>
+    if not Z instanceof shared.OctaByte
+      $Z = new shared.OctaByte(0, Z)
+    else
+      $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
+    $X.assign($Y.and($Z.neg()))
 
-  nand: ($X, $Y, $Z) => $X.assign($Y.and($Z).neg())
+  nand: ($X, $Y, Z) =>
+    if not Z instanceof shared.OctaByte
+      $Z = new shared.OctaByte(0, Z)
+    else
+      $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
+    $X.assign($Y.and($Z).neg())
 
-  nxor: ($X, $Y, $Z) => $X.assign($Y.xor($Z).neg())
+  nxor: ($X, $Y, Z) =>
+    if not Z instanceof shared.OctaByte
+      $Z = new shared.OctaByte(0, Z)
+    else
+      $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
+    $X.assign($Y.xor($Z).neg())
 
   # E0 - EF
   seth:  ($X, YZ) ->

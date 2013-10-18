@@ -139,7 +139,7 @@
       return $('#rawEditor').toggle();
     };
     $('#rawEditButton').click(function() {
-      var rtext, size, _l, _results;
+      var rtext, size, val, _l, _results;
 
       toggleRawEditor();
       size = shared.mem.size() / 4 | 0;
@@ -147,28 +147,33 @@
       rtext.value = "";
       _results = [];
       for (i = _l = 0; 0 <= size ? _l < size : _l > size; i = 0 <= size ? ++_l : --_l) {
-        _results.push(rtext.value += shared.addLeadZero(shared.mem.getTetra(i * 4).toString(16), 8) + "\n");
+        val = shared.mem.getTetra(i * 4);
+        rtext.value += shared.addLeadZero(val.toString(16), 8) + "\n";
+        if (val === 0) {
+          break;
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     });
     $('#rawEditor_save').click(function() {
-      var size, src, _l;
+      var len, src, _l, _ref;
 
-      size = shared.mem.size() / 4 | 0;
       src = $('#rawText')[0].value.replace(/[^0-9A-Fa-f]/gi, "");
-      if ((src.length / 8 | 0) !== size || src.length % 8 !== 0) {
+      len = src.length;
+      if (len % 8 !== 0) {
         alert("wrong line");
         throw "wrong line";
       }
-      for (i = _l = 0; 0 <= size ? _l < size : _l > size; i = 0 <= size ? ++_l : --_l) {
+      for (i = _l = 0, _ref = len / 8; 0 <= _ref ? _l < _ref : _l > _ref; i = 0 <= _ref ? ++_l : --_l) {
         shared.mem.setTetra(i * 4, parseInt(src.substr(i * 8, 8), 16));
       }
       return toggleRawEditor();
     });
-    $('#rawEditor_cancel').click(function() {
+    return $('#rawEditor_cancel').click(function() {
       return toggleRawEditor();
     });
-    return $(document.body).scroll;
   });
 
 }).call(this);

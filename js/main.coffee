@@ -101,17 +101,19 @@ $().ready () ->
     rtext = $('#rawText')[0]
     rtext.value = ""
     for i in [0...size]
-      rtext.value += shared.addLeadZero(shared.mem.getTetra(i * 4).toString(16),8) + "\n"
+      val = shared.mem.getTetra(i * 4)
+      rtext.value += shared.addLeadZero(val.toString(16),8) + "\n"
+      if val is 0 then break
   )
 
   $('#rawEditor_save').click( ()->
-    size = shared.mem.size() / 4 | 0
     src = $('#rawText')[0].value.replace(/[^0-9A-Fa-f]/gi, "")
-    if (src.length / 8 | 0) isnt size or src.length % 8 isnt 0
+    len = src.length
+    if len % 8 isnt 0
       alert "wrong line"
       throw "wrong line"
 
-    for i in [0...size]
+    for i in [0...len / 8]
       shared.mem.setTetra(i * 4, parseInt(src.substr(i * 8, 8), 16) )
 
     toggleRawEditor()
@@ -121,7 +123,6 @@ $().ready () ->
     toggleRawEditor()
   )
 
-  $(document.body).scroll
 
 
 
