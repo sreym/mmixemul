@@ -86,14 +86,14 @@ class shared.OctaByte
 
   getDouble: () ->
     i8Array = new Uint8Array(8)
-    i8Array[0] = (@hbyte >>> 24) && 0xFF
-    i8Array[1] = (@hbyte >>> 16) && 0xFF
-    i8Array[2] = (@hbyte >>>  8) && 0xFF
-    i8Array[3] = (@hbyte >>>  0) && 0xFF
-    i8Array[4] = (@lbyte >>> 24) && 0xFF
-    i8Array[5] = (@lbyte >>> 16) && 0xFF
-    i8Array[6] = (@lbyte >>>  8) && 0xFF
-    i8Array[7] = (@lbyte >>>  0) && 0xFF
+    i8Array[0] = (@hbyte >>> 24) & 0xFF
+    i8Array[1] = (@hbyte >>> 16) & 0xFF
+    i8Array[2] = (@hbyte >>>  8) & 0xFF
+    i8Array[3] = (@hbyte >>>  0) & 0xFF
+    i8Array[4] = (@lbyte >>> 24) & 0xFF
+    i8Array[5] = (@lbyte >>> 16) & 0xFF
+    i8Array[6] = (@lbyte >>>  8) & 0xFF
+    i8Array[7] = (@lbyte >>>  0) & 0xFF
     return new Float64Array(i8Array.buffer)[0]
 
   setDouble: (val) ->
@@ -102,6 +102,7 @@ class shared.OctaByte
     i8Array = new Uint8Array(dArray.buffer)
     @hbyte = (i8Array[0] << 24) + (i8Array[1] << 16) + (i8Array[2] << 8) + (i8Array[3] << 0)
     @lbyte = (i8Array[4] << 24) + (i8Array[5] << 16) + (i8Array[6] << 8) + (i8Array[7] << 0)
+    this
 
   add: (b, exc = null) ->
     if b instanceof shared.OctaByte

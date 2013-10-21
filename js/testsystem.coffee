@@ -3,57 +3,79 @@ shared.regs = new shared.Registers(256)
 shared.mem = new shared.Memory(1024)
 shared.proc = new shared.MMIXProcessor(mem, regs)
 
-# loading program
-getAnswerLI = (res, task, ext) ->
-  text = undefined
+programHexCode = '';
+
+getByteNameBySize  = (s) ->
+  switch s
+    when 8 then "OctaByte"
+    when 4 then "TetraByte"
+    when 2 then "Wyde"
+    when 1 then "Byte"
+
+getErrorText = (res, task, ext) ->
+  str = if res is true then "" else "Error! "
   switch task.cmd
+    when "get"
+      str += "Expected #{getByteNameBySize(task.size)} at ##{task.addr.toString(16)} with value 0x#{task.val.toString(16)}. "
+      str += "Found value 0x#{ext.value.toString(16)}." if not res
     when "set"
+      str += "Setting #{getByteNameBySize(task.size)} at ##{task.addr.toString(16)} with value 0x#{task.val.toString(16)}. "
+    when "load"
+      str += "Loading program. "
+    when "go"
+      str += "Execution. "
+    when "reg"
+      str += "Fill registry with #{task.val} values. "
+    when "mem"
+      str += "Fill memory with #{task.val} values. "
     else
-      text = "<li>" + JSON.stringify(task) + "</li>"
-  tli = $(text)
-  tli.addClass "resItem"
-  if res
-    tli.addClass "ok"
-  else
-    tli.addClass "wrong"
-  tli
-shared.goTask = (i, j) ->
-  task = shared.tasks[i][j]
-  res = $("#results")
-  res.empty()
+      str += "Unknown command identifier."
+  return str
+
+shared.goTask = (task, source, itCallBack) ->
+  programHexCode = source
   i = 0
 
   while i < task.length
+    ext = {}
     try
-      ext = {}
       r = cmd[task[i].cmd](task[i], ext)
-      res.append getAnswerLI(r, task[i], ext)
     catch e
-      alert "error! with cmd = " + task[i].cmd
+      r = false
+      console.log "error! with cmd = " + task[i].cmd
+    text = getErrorText(r, task[i], ext)
+    itCallBack(r, task[i], ext, text)
     i++
+
+
 cmd = {}
 cmd.load = (obj) ->
-  src = $("#program")[0].value.replace(/[^0-9A-Fa-f]/g, "")
-  len = src.length
+  len = programHexCode.length
   alert "wrong line"  unless len % 8 is 0
   i = 0
 
   while i < len / 8
-    shared.mem.setTetra i * 4, parseInt(src.substr(i * 8, 8), 16)
+    shared.mem.setTetra i * 4, parseInt(programHexCode.substr(i * 8, 8), 16)
     i++
   true
 
-cmd.get = (obj) ->
+cmd.get = (obj, ext) ->
   switch obj.size
     when 8
+      ext.value = shared.mem.getOcta(obj.addr)
       if obj.val instanceof shared.OctaByte
-        return shared.mem.getOcta(obj.addr).cmpu(obj.val) is 0
+        return ext.value.cmpu(obj.val) is 0
       else
-        return shared.mem.getOcta(obj.addr).cmpu(new shared.OctaByte(0, obj.val)) is 0
+        return ext.value.cmpu(new shared.OctaByte(0, obj.val)) is 0
     when 4
-      return shared.mem.getTetra(obj.addr) is obj.val
+      ext.value = shared.mem.getTetra(obj.addr)
+      return ext.value is obj.val
     when 2
-      return shared.mem.getWyde(obj.addr) is obj.val
+      ext.value = shared.mem.getWyde(obj.addr)
+      return ext.value is obj.val
+    when 1
+      ext.value = shared.mem.getByte(obj.addr)
+      return ext.value is obj.val
   true
 
 cmd.go = (obj) ->
@@ -71,6 +93,8 @@ cmd.set = (obj) ->
       shared.mem.setTetra obj.addr, obj.val
     when 2
       shared.mem.setWyde obj.addr, obj.val
+    when 1
+      shared.mem.setByte obj.addr, obj.val
   true
 
 cmd.reg = (obj) ->

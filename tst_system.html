@@ -19,6 +19,8 @@
     <script src="js/bootstrap.min.js"></script>
 
     <script src="tasks/part1.js"></script>
+    <script src="tasks/part2.js"></script>
+    <script src="tasks/part3.js"></script>
     <script src="js/testsystem.js"></script>
     <style type="text/css">
         #results .resItem {
@@ -47,7 +49,30 @@
 
         function runTask(opt) {
             var a = eval("([" + opt + "])")
-            goTask(a[0], a[1])
+            task = shared.tasks[a[0]][a[1]]
+
+            var res = $("#results")
+            res.empty()
+
+
+            $("#res_code").empty();
+            $("#res_code").append("&lt;ol&gt;");
+            goTask(task, $("#program")[0].value.replace(/[^0-9A-Fa-f]/g, ""), function(r, task, ext, text) {
+                var tli = $("<li>" + text + "</li>");
+                tli.addClass("resItem");
+                if (r) {
+                    tli.addClass("ok");
+                } else {
+                    tli.addClass("wrong");
+                }
+                res.append(tli);
+                var styleText = "";
+                if (!r) {
+                    styleText = " style='background-color: magenta;'"
+                }
+                $("#res_code").append("&lt;li" + styleText + "&gt;" + text + "&lt;/li&gt;");
+            });
+            $("#res_code").append("&lt;/ol&gt;");
         }
     </script>
 </head>
@@ -60,12 +85,13 @@
 <div class="container">
     <div class="row">
         <div class="col-6">
-            <textarea id="program"></textarea>
+            <textarea id="program" rows="15" cols="20"></textarea>
         </div>
         <div class="col-6">
             <select id="task"></select><button onclick="runTask($('#task').val())">Run Test</button>
 
             <ol id="results"></ol>
+            <pre id="res_code"></pre>
         </div>
     </div>
 

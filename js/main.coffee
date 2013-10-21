@@ -94,6 +94,9 @@ $().ready () ->
 
   toggleRawEditor = () ->
     $('#rawEditor').toggle()
+    $('#memed').data('editing', false)
+    $('#reged').data('editing', false)
+
 
   $('#rawEditButton').click( ()->
     toggleRawEditor()

@@ -80,7 +80,7 @@ class shared.MMIXCommands
     $X.hbyte = (Z / Math.pow(2, 32)) & 0xFFFFFFFF
 
   flot: ($X, Y, $Z_val) =>
-    if not $Z instanceof shared.OctaByte
+    if not ($Z_val instanceof shared.OctaByte)
       $Z = new shared.OctaByte(0, $Z_val)
     else
       $Z = new shared.OctaByte(0,0)
@@ -92,7 +92,33 @@ class shared.MMIXCommands
     else
       neg = false
 
-  flotu: ($X, Y, $Z) =>
+    extra = ($Z.hbyte >>> 21) & 0x3FF
+    extraShift = 0
+    while extra isnt 0
+      extra = extra / 2 | 0;
+      extraShift++;
+
+    number = (($Z.hbyte & 0x7FFFFFFF)  * Math.pow(2, 32 - extraShift)) + ($Z.lbyte >>> extraShift)
+    number *= Math.pow(2, extraShift)
+    number *= -1 if neg
+    $X.setDouble(number)
+
+  flotu: ($X, Y, $Z_val) =>
+    if not ($Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, $Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign($Z_val)
+
+    extra = $Z.hbyte >>> 21
+    extraShift = 0
+    while extra isnt 0
+      extra = extra / 2 | 0
+      extraShift++
+
+    number = (($Z.hbyte & 0x7FFFFFFF)  * Math.pow(2, 32 - extraShift)) + ($Z.lbyte >>> extraShift)
+    number *= Math.pow(2, extraShift)
+    $X.setDouble(number)
 
   sflot: ($X, Y, $Z) =>
 
@@ -159,7 +185,7 @@ class shared.MMIXCommands
 
   # 18 - 1F
   mulu: ($X, $Y_val, $Z_val, exc = null) =>
-    if not $Z instanceof shared.OctaByte
+    if not ($Z instanceof shared.OctaByte)
       $Z = new shared.OctaByte(0, $Z_val)
     else
       $Z = new shared.OctaByte(0,0)
@@ -200,7 +226,7 @@ class shared.MMIXCommands
 
 
   mul: ($X, $Y_val, $Z_val, exc = null) =>
-    if not $Z instanceof shared.OctaByte
+    if not ($Z instanceof shared.OctaByte)
       $Z = new shared.OctaByte(0, $Z_val)
     else
       $Z = new shared.OctaByte(0,0)
@@ -301,56 +327,56 @@ class shared.MMIXCommands
 
   # C0 - CF
   or : ($X, $Y, Z) =>
-    if not Z instanceof shared.OctaByte
+    if not (Z instanceof shared.OctaByte)
       $Z = new shared.OctaByte(0, Z)
     else
       $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
     $X.assign($Y.or($Z))
 
   orn: ($X, $Y, Z) =>
-    if not Z instanceof shared.OctaByte
+    if not (Z instanceof shared.OctaByte)
       $Z = new shared.OctaByte(0, Z)
     else
       $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
     $X.assign($Y.or($Z.neg()))
 
   nor: ($X, $Y, Z) =>
-    if not Z instanceof shared.OctaByte
+    if not (Z instanceof shared.OctaByte)
       $Z = new shared.OctaByte(0, Z)
     else
       $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
     $X.assign($Y.or($Z).neg())
 
   xor: ($X, $Y, Z) =>
-    if not Z instanceof shared.OctaByte
+    if not (Z instanceof shared.OctaByte)
       $Z = new shared.OctaByte(0, Z)
     else
       $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
     $X.assign($Y.xor($Z))
 
   and: ($X, $Y, Z) =>
-    if not Z instanceof shared.OctaByte
+    if not (Z instanceof shared.OctaByte)
       $Z = new shared.OctaByte(0, Z)
     else
       $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
     $X.assign($Y.and($Z))
 
   andn: ($X, $Y, Z) =>
-    if not Z instanceof shared.OctaByte
+    if not (Z instanceof shared.OctaByte)
       $Z = new shared.OctaByte(0, Z)
     else
       $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
     $X.assign($Y.and($Z.neg()))
 
   nand: ($X, $Y, Z) =>
-    if not Z instanceof shared.OctaByte
+    if not (Z instanceof shared.OctaByte)
       $Z = new shared.OctaByte(0, Z)
     else
       $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)
     $X.assign($Y.and($Z).neg())
 
   nxor: ($X, $Y, Z) =>
-    if not Z instanceof shared.OctaByte
+    if not (Z instanceof shared.OctaByte)
       $Z = new shared.OctaByte(0, Z)
     else
       $Z = new shared.OctaByte(Z.hbyte, Z.lbyte)

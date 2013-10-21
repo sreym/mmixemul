@@ -151,14 +151,14 @@
       var i8Array;
 
       i8Array = new Uint8Array(8);
-      i8Array[0] = (this.hbyte >>> 24) && 0xFF;
-      i8Array[1] = (this.hbyte >>> 16) && 0xFF;
-      i8Array[2] = (this.hbyte >>> 8) && 0xFF;
-      i8Array[3] = (this.hbyte >>> 0) && 0xFF;
-      i8Array[4] = (this.lbyte >>> 24) && 0xFF;
-      i8Array[5] = (this.lbyte >>> 16) && 0xFF;
-      i8Array[6] = (this.lbyte >>> 8) && 0xFF;
-      i8Array[7] = (this.lbyte >>> 0) && 0xFF;
+      i8Array[0] = (this.hbyte >>> 24) & 0xFF;
+      i8Array[1] = (this.hbyte >>> 16) & 0xFF;
+      i8Array[2] = (this.hbyte >>> 8) & 0xFF;
+      i8Array[3] = (this.hbyte >>> 0) & 0xFF;
+      i8Array[4] = (this.lbyte >>> 24) & 0xFF;
+      i8Array[5] = (this.lbyte >>> 16) & 0xFF;
+      i8Array[6] = (this.lbyte >>> 8) & 0xFF;
+      i8Array[7] = (this.lbyte >>> 0) & 0xFF;
       return new Float64Array(i8Array.buffer)[0];
     };
 
@@ -169,7 +169,8 @@
       dArray[0] = val;
       i8Array = new Uint8Array(dArray.buffer);
       this.hbyte = (i8Array[0] << 24) + (i8Array[1] << 16) + (i8Array[2] << 8) + (i8Array[3] << 0);
-      return this.lbyte = (i8Array[4] << 24) + (i8Array[5] << 16) + (i8Array[6] << 8) + (i8Array[7] << 0);
+      this.lbyte = (i8Array[4] << 24) + (i8Array[5] << 16) + (i8Array[6] << 8) + (i8Array[7] << 0);
+      return this;
     };
 
     OctaByte.prototype.add = function(b, exc) {

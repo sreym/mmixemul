@@ -136,7 +136,9 @@
       }
     });
     toggleRawEditor = function() {
-      return $('#rawEditor').toggle();
+      $('#rawEditor').toggle();
+      $('#memed').data('editing', false);
+      return $('#reged').data('editing', false);
     };
     $('#rawEditButton').click(function() {
       var rtext, size, val, _l, _results;
