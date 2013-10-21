@@ -30,7 +30,7 @@
         return "<span class='desc' view='asm'>" + (shared.proc.disassemble(shared.mem.getTetra(i * 4))) + " (asm)</span>";
       }
     });
-    linetypes = ["asm", "uint32", "int32", "float", "bool", "ascii"];
+    linetypes = ["asm", "uint32", "int32", "double", "bool", "ascii"];
     updateMemHexLine = function(line) {
       var lA, lB, lC, lD, linetext, linetype, val;
 
@@ -75,7 +75,7 @@
           }
           linetext = lA + lB + lC + lD;
           break;
-        case "float":
+        case "double":
           val = shared.mem.getOcta(i);
           linetext = val.getDouble();
           break;

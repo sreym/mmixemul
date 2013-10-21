@@ -22,7 +22,7 @@ $().ready () ->
       "<span class='desc' view='asm'>#{shared.proc.disassemble(shared.mem.getTetra(i * 4))} (asm)</span>"
   )
 
-  linetypes = ["asm", "uint32", "int32", "float", "bool", "ascii"]
+  linetypes = ["asm", "uint32", "int32", "double", "bool", "ascii"]
 
   updateMemHexLine = (line) ->
     linetype = line.attr("view")
@@ -42,7 +42,7 @@ $().ready () ->
         unless ((val >>> 8)  & 0xFF) < 32 then lC = String.fromCharCode((val >>> 8)  & 0xFF) else lC = '◦'
         unless ((val >>> 0)  & 0xFF) < 32 then lD = String.fromCharCode((val >>> 0)  & 0xFF) else lD = '◦'
         linetext = lA + lB + lC + lD
-      when "float"
+      when "double"
         val = shared.mem.getOcta(i)
         linetext = val.getDouble()
       when "bool"
