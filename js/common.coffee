@@ -102,6 +102,8 @@ class shared.OctaByte
     i8Array = new Uint8Array(dArray.buffer)
     @hbyte = (i8Array[0] << 24) + (i8Array[1] << 16) + (i8Array[2] << 8) + (i8Array[3] << 0)
     @lbyte = (i8Array[4] << 24) + (i8Array[5] << 16) + (i8Array[6] << 8) + (i8Array[7] << 0)
+    @hbyte >>>= 0
+    @lbyte >>>= 0
     this
 
   add: (b, exc = null) ->

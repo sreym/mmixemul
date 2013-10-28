@@ -23,7 +23,6 @@ updateEditView = (block_div) ->
     block_div.find("span.editing").removeClass("editing")
 
 plusEditing = (block_div, i) ->
-  console.log i
   nval = block_div.data('editing') + i
   if 0 <= nval < block_div.data("options").size * 2
     block_div.data('editing', nval)

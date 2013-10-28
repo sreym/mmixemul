@@ -33,11 +33,11 @@ class shared.MMIXCommands
     Y = $Y.getDouble()
     Z = $Z.getDouble()
     if Y < Z
-      $X.lbyte = 0xFFFFFFFF
+      $X.setInt(-1)
     else if Y > Z
-      $X.lbyte = 1
+      $X.setInt(1)
     else
-      $X.lbyte = 0
+      $X.setInt(0)
 
   fun:  ($X, $Y, $Z) =>
     $X.hbyte = 0
@@ -79,12 +79,12 @@ class shared.MMIXCommands
     $X.lbyte = Z & 0xFFFFFFFF
     $X.hbyte = (Z / Math.pow(2, 32)) & 0xFFFFFFFF
 
-  flot: ($X, Y, $Z_val) =>
-    if not ($Z_val instanceof shared.OctaByte)
-      $Z = new shared.OctaByte(0, $Z_val)
+  flot: ($X, Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
     else
       $Z = new shared.OctaByte(0,0)
-      $Z.assign($Z_val)
+      $Z.assign(Z_val)
 
     if $Z.is_neg()
       neg = true
@@ -103,12 +103,12 @@ class shared.MMIXCommands
     number *= -1 if neg
     $X.setDouble(number)
 
-  flotu: ($X, Y, $Z_val) =>
-    if not ($Z_val instanceof shared.OctaByte)
-      $Z = new shared.OctaByte(0, $Z_val)
+  flotu: ($X, Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
     else
       $Z = new shared.OctaByte(0,0)
-      $Z.assign($Z_val)
+      $Z.assign(Z_val)
 
     extra = $Z.hbyte >>> 21
     extraShift = 0
@@ -184,12 +184,12 @@ class shared.MMIXCommands
     $X.setDouble(Z)
 
   # 18 - 1F
-  mulu: ($X, $Y_val, $Z_val, exc = null) =>
-    if not ($Z instanceof shared.OctaByte)
-      $Z = new shared.OctaByte(0, $Z_val)
+  mulu: ($X, $Y_val, Z_val, exc = null) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
     else
       $Z = new shared.OctaByte(0,0)
-      $Z.assign($Z_val)
+      $Z.assign(Z_val)
     $Y = new shared.OctaByte(0,0)
     $Y.assign($Y_val)
 
@@ -225,12 +225,12 @@ class shared.MMIXCommands
       exc = "overflow"
 
 
-  mul: ($X, $Y_val, $Z_val, exc = null) =>
-    if not ($Z instanceof shared.OctaByte)
-      $Z = new shared.OctaByte(0, $Z_val)
+  mul: ($X, $Y_val, Z_val, exc = null) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
     else
       $Z = new shared.OctaByte(0,0)
-      $Z.assign($Z_val)
+      $Z.assign(Z_val)
 
     $Y = new shared.OctaByte(0,0)
     $Y.assign($Y_val)
@@ -252,6 +252,82 @@ class shared.MMIXCommands
     $X.assign($Y.add($Z))
   sub: ($X, $Y, $Z) =>
     $X.assign($Y.sub($Z))
+
+  # 30 - 3F
+  cmp: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    switch $Y.cmp($Z)
+      when -1 then $X.setInt(-1)
+      when 1 then $X.setInt(1)
+      else $X.setInt(0)
+
+  cmpu: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    switch $Y.cmpu($Z)
+      when -1 then $X.setInt(-1)
+      when 1 then $X.setInt(1)
+      else $X.setInt(0)
+
+  neg: ($X, Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    $Y = new shared.OctaByte(0, Y)
+    $X.assign($Y.sub($Z))
+
+  negu: ($X, Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    $Y = new shared.OctaByte(0, Y)
+
+  # 40 - 4F
+
+  bn: ($X, YZ) =>
+    if $X.cmp(new shared.OctaByte(0,0)) is -1
+      @processor.r.curEx += 4 * YZ
+
+  bz: ($X, YZ) =>
+    if $X.cmp(new shared.OctaByte(0,0)) is 0
+      @processor.r.curEx += 4 * YZ
+
+
+  bp: ($X, YZ) =>
+    if $X.cmp(new shared.OctaByte(0,0)) is 1
+      @processor.r.curEx += 4 * YZ
+
+  bod: ($X, YZ) =>
+    if $X.lbyte & 0x1 isnt 0
+      @processor.r.curEx += 4 * YZ
+
+  bnn: ($X, YZ) =>
+    if $X.cmp(new shared.OctaByte(0,0)) isnt -1
+      @processor.r.curEx += 4 * YZ
+
+
+  bnz: ($X, YZ) =>
+    if $X.cmp(new shared.OctaByte(0,0)) isnt 0
+      @processor.r.curEx += 4 * YZ
+
+  bnp: ($X, YZ) =>
+    if $X.cmp(new shared.OctaByte(0,0)) isnt 1
+      @processor.r.curEx += 4 * YZ
+
+  bev: ($X, YZ) =>
+    if $X.lbyte & 0x1 is 0
+      @processor.r.curEx += 4 * YZ
 
   # 80 - 8F
   ldb: ($X, $Y, $Z) =>
@@ -418,4 +494,9 @@ class shared.MMIXCommands
   andmh: ($X, YZ) -> $X.setMH($X.getMH() & !YZ)
   andml: ($X, YZ) -> $X.setML($X.getML() & !YZ)
   andl:  ($X, YZ) -> $X.setL($X.getL() & !YZ)
+
+  # F0 - FF
+
+  jmp: (XYZ) =>
+    @processor.r.curEx += 4 * XYZ
 

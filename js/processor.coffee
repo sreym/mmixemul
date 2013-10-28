@@ -36,14 +36,20 @@ class shared.Registers
 
 class shared.MMIXProcessor
   OCTYPES:
-    Rw: new Object()
-    rrr: new Object()
-    rrb: new Object()
-    Rrr: new Object()
-    Rrb: new Object()
-    bbb: new Object()
-    Ror: new Object()
-    Rob: new Object()
+    Rw: new Object()  # read-write Register and positive Wyde
+    ra: new Object()  # readonly Register and wyde with Address
+    rA: new Object()  # readonly Register and wyde with negative Address
+    rh: new Object()  # readonly Register and Hexabyte with address
+    rH: new Object()  # readonly Register and Hexabyte with negative address
+    rrr: new Object() # three readonly Registers
+    rrb: new Object() # two readonly Registers and Byte
+    Rrr: new Object() # read-write Register and two readonly Registers
+    Rrb: new Object() # read-write Register, then readonly Register and byte
+    bbb: new Object() # three Bytes
+    Ror: new Object() # read-write Register, then rOunding setting and readonly Register
+    Rob: new Object() # read-write Register, then rOunding setting and byte
+    Rbr: new Object() # read-write Register, then Byte and readonly Register
+    Rbb: new Object() # read-write Register and two Bytes
 
   addcomc: 0
 
@@ -56,8 +62,10 @@ class shared.MMIXProcessor
     @r.curEx = 0
     @r.break = 0
     while @r.break isnt 1
+      oldCurEx = @r.curEx
       @execute(@mem.getTetra(@r.curEx))
-      @r.curEx += 4
+      if @r.curEx is oldCurEx
+        @r.curEx += 4
 
 
   constructor: (memory, registers) ->
@@ -115,6 +123,56 @@ class shared.MMIXProcessor
     @addcom(0x25, "sub",    octypes.Rrb, mmixcoms.sub)
     @addcom(0x26, "subu",   octypes.Rrr, mmixcoms.sub)
     @addcom(0x27, "subu",   octypes.Rrb, mmixcoms.sub)
+
+    @addcom(0x30, "cmp",    octypes.Rrr, mmixcoms.cmp)
+    @addcom(0x31, "cmp",    octypes.Rrb, mmixcoms.cmp)
+    @addcom(0x32, "cmpu",   octypes.Rrr, mmixcoms.cmpu)
+    @addcom(0x33, "cmpu",   octypes.Rrb, mmixcoms.cmpu)
+
+    @addcom(0x34, "neg",    octypes.Rbr, mmixcoms.neg)
+    @addcom(0x35, "neg",    octypes.Rbb, mmixcoms.neg)
+    @addcom(0x36, "negu",   octypes.Rbr, mmixcoms.negu)
+    @addcom(0x37, "negu",   octypes.Rbb, mmixcoms.negu)
+
+    @addcom(0x40, "bn",     octypes.ra,  mmixcoms.bn)
+    @addcom(0x41, "bn",     octypes.rA,  mmixcoms.bn)
+    @addcom(0x42, "bz",     octypes.ra,  mmixcoms.bz)
+    @addcom(0x43, "bz",     octypes.rA,  mmixcoms.bz)
+
+    @addcom(0x44, "bp",     octypes.ra,  mmixcoms.bp)
+    @addcom(0x45, "bp",     octypes.rA,  mmixcoms.bp)
+    @addcom(0x46, "bod",    octypes.ra,  mmixcoms.bod)
+    @addcom(0x47, "bod",    octypes.rA,  mmixcoms.bod)
+
+    @addcom(0x48, "bnn",    octypes.ra,  mmixcoms.bnn)
+    @addcom(0x49, "bnn",    octypes.rA,  mmixcoms.bnn)
+    @addcom(0x4A, "bnz",    octypes.ra,  mmixcoms.bnz)
+    @addcom(0x4B, "bnz",    octypes.rA,  mmixcoms.bnz)
+
+    @addcom(0x4C, "bnp",    octypes.ra,  mmixcoms.bnp)
+    @addcom(0x4D, "bnp",    octypes.rA,  mmixcoms.bnp)
+    @addcom(0x4E, "bev",    octypes.ra,  mmixcoms.bev)
+    @addcom(0x4F, "bev",    octypes.rA,  mmixcoms.bev)
+
+    @addcom(0x50, "pbn",     octypes.ra,  mmixcoms.bn)
+    @addcom(0x51, "pbn",     octypes.rA,  mmixcoms.bn)
+    @addcom(0x52, "pbz",     octypes.ra,  mmixcoms.bz)
+    @addcom(0x53, "pbz",     octypes.rA,  mmixcoms.bz)
+
+    @addcom(0x54, "pbp",     octypes.ra,  mmixcoms.bp)
+    @addcom(0x55, "pbp",     octypes.rA,  mmixcoms.bp)
+    @addcom(0x56, "pbod",    octypes.ra,  mmixcoms.bod)
+    @addcom(0x57, "pbod",    octypes.rA,  mmixcoms.bod)
+
+    @addcom(0x58, "pbnn",    octypes.ra,  mmixcoms.bnn)
+    @addcom(0x59, "pbnn",    octypes.rA,  mmixcoms.bnn)
+    @addcom(0x5A, "pbnz",    octypes.ra,  mmixcoms.bnz)
+    @addcom(0x5B, "pbnz",    octypes.rA,  mmixcoms.bnz)
+
+    @addcom(0x5C, "pbnp",    octypes.ra,  mmixcoms.bnp)
+    @addcom(0x5D, "pbnp",    octypes.rA,  mmixcoms.bnp)
+    @addcom(0x5E, "pbev",    octypes.ra,  mmixcoms.bev)
+    @addcom(0x5F, "pbev",    octypes.rA,  mmixcoms.bev)
 
     @addcom(0x80, "ldb",    octypes.Rrr, mmixcoms.ldb)
     @addcom(0x81, "ldb",    octypes.Rrb, mmixcoms.ldb)
@@ -196,6 +254,10 @@ class shared.MMIXProcessor
     @addcom(0xEE, "andml",  octypes.Rw, mmixcoms.andml)
     @addcom(0xEF, "andl",   octypes.Rw, mmixcoms.andl)
 
+    @addcom(0xF0, "jmp",    octypes.rh, mmixcoms.jmp)
+    @addcom(0xEF, "jmp",    octypes.rH, mmixcoms.jmp)
+
+
 
   addcom: (opcode, name, type, f) ->
     @coms[opcode] = f
@@ -208,8 +270,19 @@ class shared.MMIXProcessor
     octypes = @OCTYPES
     if @comstypes[opcode] is octypes.Rw
       @comsnames[opcode] +
-        " $" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(),2) +
-        " 0x" + shared.addLeadZero((command & 0xFFFF).toString(16).toUpperCase(),4)
+      " $" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(),2) +
+      " 0x" + shared.addLeadZero((command & 0xFFFF).toString(16).toUpperCase(),4)
+    else if @comstypes[opcode] is octypes.ra or @comstypes[opcode] is octypes.rA
+      @comsnames[opcode] +
+      " $" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(),2) +
+      (if @comstypes[opcode] is octypes.ra then " @+" else " @-") + "4*0x" +
+      shared.addLeadZero((command & 0xFFFF).toString(16).toUpperCase(),4)
+    else if @comstypes[opcode] is octypes.rh or @comstypes[opcode] is octypes.rH
+      @comsnames[opcode] +
+      (if @comstypes[opcode] is octypes.rh then " @+" else " @-") + "4*0x" +
+      shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(),2) +
+      shared.addLeadZero((command >>>  8 & 0xFF).toString(16).toUpperCase(),2) +
+      shared.addLeadZero((command >>>  0 & 0xFF).toString(16).toUpperCase(),2)
     else if @comstypes[opcode] is octypes.rrr or @comstypes[opcode] is octypes.Rrr
       @comsnames[opcode] +
       " $" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(),2) +
@@ -249,8 +322,19 @@ class shared.MMIXProcessor
           when 4 then " ROUND_NEAR"
           else " __WRONG__"
       ) + " $" + shared.addLeadZero((command >>>  0 & 0xFF).toString(16).toUpperCase(),2)
+    else if @comstypes[opcode] is octypes.Rbb
+      @comsnames[opcode] +
+      " $" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(),2) +
+      " 0x" + shared.addLeadZero((command >>>  8 & 0xFF).toString(16).toUpperCase(),2) +
+      " 0x" + shared.addLeadZero((command >>>  0 & 0xFF).toString(16).toUpperCase(),2)
+    else if @comstypes[opcode] is octypes.Rbr
+      @comsnames[opcode] +
+      " $" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(),2) +
+      " 0x" + shared.addLeadZero((command >>>  8 & 0xFF).toString(16).toUpperCase(),2) +
+      " $" + shared.addLeadZero((command >>>  0 & 0xFF).toString(16).toUpperCase(),2)
     else
       "not implemented yet " + shared.addLeadZero(opcode.toString(16).toUpperCase(),2)
+
   execute: (command) ->
     opcode = command >>> 24
     octypes = @OCTYPES
@@ -260,6 +344,18 @@ class shared.MMIXProcessor
       w = command & 0xFFFF
       @coms[opcode]($X, w)
       @regs.setOcta($X_i, $X)
+    else if @comstypes[opcode] is octypes.ra or @comstypes[opcode] is octypes.rA
+      $X_i = (command >>> 16) & 0xFF
+      $X = @regs.getOcta($X_i)
+      w = command & 0xFFFF
+      if @comstypes[opcode] is octypes.rA
+        w = -w;
+      @coms[opcode]($X, w)
+    else if @comstypes[opcode] is octypes.rh or @comstypes[opcode] is octypes.rH
+      h = command & 0xFFFFFF
+      if @comstypes[opcode] is octypes.rH
+        h = -h;
+      @coms[opcode](h)
     else if @comstypes[opcode] is octypes.rrr or @comstypes[opcode] is octypes.Rrr
       $X_i = (command >>> 16) & 0xFF
       $Y_i = (command >>>  8) & 0xFF
@@ -296,6 +392,21 @@ class shared.MMIXProcessor
       $X_i = (command >>> 16) & 0xFF
       Y = (command >>>  8) & 0xFF
       Z  = (command >>>  0) & 0xFF
+      $X = @regs.getOcta($X_i)
+      @coms[opcode]($X, Y, Z)
+      @regs.setOcta($X_i, $X)
+    else if @comstypes[opcode] is octypes.Rbr
+      $X_i = (command >>> 16) & 0xFF
+      Y = (command >>>  8) & 0xFF
+      $Z_i = (command >>>  0) & 0xFF
+      $X = @regs.getOcta($X_i)
+      $Z = @regs.getOcta($Z_i)
+      @coms[opcode]($X, Y, $Z)
+      @regs.setOcta($X_i, $X)
+    else if @comstypes[opcode] is octypes.Rbb
+      $X_i = (command >>> 16) & 0xFF
+      Y = (command >>>  8) & 0xFF
+      Z = (command >>>  0) & 0xFF
       $X = @regs.getOcta($X_i)
       @coms[opcode]($X, Y, Z)
       @regs.setOcta($X_i, $X)
