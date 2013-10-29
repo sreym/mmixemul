@@ -174,6 +174,46 @@ class shared.MMIXProcessor
     @addcom(0x5E, "pbev",    octypes.ra,  mmixcoms.bev)
     @addcom(0x5F, "pbev",    octypes.rA,  mmixcoms.bev)
 
+    @addcom(0x60, "csn",     octypes.Rrr, mmixcoms.csn)
+    @addcom(0x61, "csn",     octypes.Rrb, mmixcoms.csn)
+    @addcom(0x62, "csz",     octypes.Rrr, mmixcoms.csz)
+    @addcom(0x63, "csz",     octypes.Rrb, mmixcoms.csz)
+
+    @addcom(0x64, "csp",     octypes.Rrr, mmixcoms.csp)
+    @addcom(0x65, "csp",     octypes.Rrb, mmixcoms.csp)
+    @addcom(0x66, "csod",    octypes.Rrr, mmixcoms.csod)
+    @addcom(0x67, "csod",    octypes.Rrb, mmixcoms.csod)
+
+    @addcom(0x68, "csnn",    octypes.Rrr, mmixcoms.csnn)
+    @addcom(0x69, "csnn",    octypes.Rrb, mmixcoms.csnn)
+    @addcom(0x6A, "csnz",    octypes.Rrr, mmixcoms.csnz)
+    @addcom(0x6B, "csnz",    octypes.Rrb, mmixcoms.csnz)
+
+    @addcom(0x6C, "csnp",    octypes.Rrr, mmixcoms.csnp)
+    @addcom(0x6D, "csnp",    octypes.Rrb, mmixcoms.csnp)
+    @addcom(0x6E, "csev",    octypes.Rrr, mmixcoms.csev)
+    @addcom(0x6F, "csev",    octypes.Rrb, mmixcoms.csev)
+
+    @addcom(0x70, "zsn",     octypes.Rrr, mmixcoms.zsn)
+    @addcom(0x71, "zsn",     octypes.Rrb, mmixcoms.zsn)
+    @addcom(0x72, "zsz",     octypes.Rrr, mmixcoms.zsz)
+    @addcom(0x73, "zsz",     octypes.Rrb, mmixcoms.zsz)
+
+    @addcom(0x74, "zsp",     octypes.Rrr, mmixcoms.zsp)
+    @addcom(0x75, "zsp",     octypes.Rrb, mmixcoms.zsp)
+    @addcom(0x76, "zsod",    octypes.Rrr, mmixcoms.zsod)
+    @addcom(0x77, "zsod",    octypes.Rrb, mmixcoms.zsod)
+
+    @addcom(0x78, "zsnn",    octypes.Rrr, mmixcoms.zsnn)
+    @addcom(0x79, "zsnn",    octypes.Rrb, mmixcoms.zsnn)
+    @addcom(0x7A, "zsnz",    octypes.Rrr, mmixcoms.zsnz)
+    @addcom(0x7B, "zsnz",    octypes.Rrb, mmixcoms.zsnz)
+
+    @addcom(0x7C, "zsnp",    octypes.Rrr, mmixcoms.zsnp)
+    @addcom(0x7D, "zsnp",    octypes.Rrb, mmixcoms.zsnp)
+    @addcom(0x7E, "zsev",    octypes.Rrr, mmixcoms.zsev)
+    @addcom(0x7F, "zsev",    octypes.Rrb, mmixcoms.zsev)
+
     @addcom(0x80, "ldb",    octypes.Rrr, mmixcoms.ldb)
     @addcom(0x81, "ldb",    octypes.Rrb, mmixcoms.ldb)
     @addcom(0x82, "ldbu",   octypes.Rrr, mmixcoms.ldbu)

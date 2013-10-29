@@ -56,6 +56,22 @@
       this.ldw = __bind(this.ldw, this);
       this.ldbu = __bind(this.ldbu, this);
       this.ldb = __bind(this.ldb, this);
+      this.zsev = __bind(this.zsev, this);
+      this.zsnp = __bind(this.zsnp, this);
+      this.zsnz = __bind(this.zsnz, this);
+      this.zsnn = __bind(this.zsnn, this);
+      this.zsod = __bind(this.zsod, this);
+      this.zsp = __bind(this.zsp, this);
+      this.zsz = __bind(this.zsz, this);
+      this.zsn = __bind(this.zsn, this);
+      this.csev = __bind(this.csev, this);
+      this.csnp = __bind(this.csnp, this);
+      this.csnz = __bind(this.csnz, this);
+      this.csnn = __bind(this.csnn, this);
+      this.csod = __bind(this.csod, this);
+      this.csp = __bind(this.csp, this);
+      this.csz = __bind(this.csz, this);
+      this.csn = __bind(this.csn, this);
       this.bev = __bind(this.bev, this);
       this.bnp = __bind(this.bnp, this);
       this.bnz = __bind(this.bnz, this);
@@ -483,6 +499,230 @@
     MMIXCommands.prototype.bev = function($X, YZ) {
       if ($X.lbyte & 0x1 === 0) {
         return this.processor.r.curEx += 4 * YZ;
+      }
+    };
+
+    MMIXCommands.prototype.csn = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.is_neg()) {
+        return $X.assign($Z);
+      }
+    };
+
+    MMIXCommands.prototype.csz = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.cmp(new shared.OctaByte(0, 0)) === 0) {
+        return $X.assign($Z);
+      }
+    };
+
+    MMIXCommands.prototype.csp = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.cmp(new shared.OctaByte(0, 0)) === 1) {
+        return $X.assign($Z);
+      }
+    };
+
+    MMIXCommands.prototype.csod = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.lbyte & 0x1 !== 0) {
+        return $X.assign($Z);
+      }
+    };
+
+    MMIXCommands.prototype.csnn = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.cmp(new shared.OctaByte(0, 0)) !== -1) {
+        return $X.assign($Z);
+      }
+    };
+
+    MMIXCommands.prototype.csnz = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.cmp(new shared.OctaByte(0, 0)) !== 0) {
+        return $X.assign($Z);
+      }
+    };
+
+    MMIXCommands.prototype.csnp = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.cmp(new shared.OctaByte(0, 0)) !== 1) {
+        return $X.assign($Z);
+      }
+    };
+
+    MMIXCommands.prototype.csev = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.lbyte & 0x1 === 0) {
+        return $X.assign($Z);
+      }
+    };
+
+    MMIXCommands.prototype.zsn = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.is_neg()) {
+        return $X.assign($Z);
+      } else {
+        return $X.setInt(0);
+      }
+    };
+
+    MMIXCommands.prototype.zsz = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.cmp(new shared.OctaByte(0, 0)) === 0) {
+        return $X.assign($Z);
+      } else {
+        return $X.setInt(0);
+      }
+    };
+
+    MMIXCommands.prototype.zsp = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.cmp(new shared.OctaByte(0, 0)) === 1) {
+        return $X.assign($Z);
+      } else {
+        return $X.setInt(0);
+      }
+    };
+
+    MMIXCommands.prototype.zsod = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.lbyte & 0x1 !== 0) {
+        return $X.assign($Z);
+      } else {
+        return $X.setInt(0);
+      }
+    };
+
+    MMIXCommands.prototype.zsnn = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.cmp(new shared.OctaByte(0, 0)) !== -1) {
+        return $X.assign($Z);
+      } else {
+        return $X.setInt(0);
+      }
+    };
+
+    MMIXCommands.prototype.zsnz = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.cmp(new shared.OctaByte(0, 0)) !== 0) {
+        return $X.assign($Z);
+      } else {
+        return $X.setInt(0);
+      }
+    };
+
+    MMIXCommands.prototype.zsnp = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.cmp(new shared.OctaByte(0, 0)) !== 1) {
+        return $X.assign($Z);
+      } else {
+        return $X.setInt(0);
+      }
+    };
+
+    MMIXCommands.prototype.zsev = function($X, $Y, Z_val) {
+      var $Z;
+      if (!(Z_val instanceof shared.OctaByte)) {
+        $Z = new shared.OctaByte(0, Z_val);
+      } else {
+        $Z = new shared.OctaByte(0, 0);
+        $Z.assign(Z_val);
+      }
+      if ($Y.lbyte & 0x1 === 0) {
+        return $X.assign($Z);
+      } else {
+        return $X.setInt(0);
       }
     };
 

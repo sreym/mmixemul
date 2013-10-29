@@ -329,6 +329,170 @@ class shared.MMIXCommands
     if $X.lbyte & 0x1 is 0
       @processor.r.curEx += 4 * YZ
 
+  # 60 - 6F
+  csn: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.is_neg()
+      $X.assign($Z)
+
+
+  csz: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.cmp(new shared.OctaByte(0,0)) is 0
+      $X.assign($Z)
+
+  csp: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.cmp(new shared.OctaByte(0,0)) is 1
+      $X.assign($Z)
+
+  csod: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.lbyte & 0x1 isnt 0
+      $X.assign($Z)
+
+  csnn: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.cmp(new shared.OctaByte(0,0)) isnt -1
+      $X.assign($Z)
+
+  csnz: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.cmp(new shared.OctaByte(0,0)) isnt 0
+      $X.assign($Z)
+
+  csnp: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.cmp(new shared.OctaByte(0,0)) isnt 1
+      $X.assign($Z)
+
+  csev: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.lbyte & 0x1 is 0
+      $X.assign($Z)
+
+  # 70 - 7F
+  zsn: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.is_neg()
+      $X.assign($Z)
+    else
+      $X.setInt(0)
+
+
+  zsz: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.cmp(new shared.OctaByte(0,0)) is 0
+      $X.assign($Z)
+    else
+      $X.setInt(0)
+
+  zsp: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.cmp(new shared.OctaByte(0,0)) is 1
+      $X.assign($Z)
+    else
+      $X.setInt(0)
+
+  zsod: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.lbyte & 0x1 isnt 0
+      $X.assign($Z)
+    else
+      $X.setInt(0)
+
+  zsnn: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.cmp(new shared.OctaByte(0,0)) isnt -1
+      $X.assign($Z)
+    else
+      $X.setInt(0)
+
+  zsnz: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.cmp(new shared.OctaByte(0,0)) isnt 0
+      $X.assign($Z)
+    else
+      $X.setInt(0)
+
+  zsnp: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.cmp(new shared.OctaByte(0,0)) isnt 1
+      $X.assign($Z)
+    else
+      $X.setInt(0)
+
+  zsev: ($X, $Y, Z_val) =>
+    if not (Z_val instanceof shared.OctaByte)
+      $Z = new shared.OctaByte(0, Z_val)
+    else
+      $Z = new shared.OctaByte(0,0)
+      $Z.assign(Z_val)
+    if $Y.lbyte & 0x1 is 0
+      $X.assign($Z)
+    else
+      $X.setInt(0)
+
   # 80 - 8F
   ldb: ($X, $Y, $Z) =>
     addr = $Y.add($Z)
@@ -338,6 +502,7 @@ class shared.MMIXCommands
       $X.lbyte = $X.lbyte ^ (0xFFFFFF << 8)
     else
       $X.hbyte = 0x0
+
   ldbu: ($X, $Y, $Z) =>
     addr = $Y.add($Z)
     $X.lbyte = @mem.getByte(addr.lbyte)
