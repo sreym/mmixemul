@@ -26,6 +26,7 @@ plusEditing = (block_div, i) ->
   nval = block_div.data('editing') + i
   if 0 <= nval < block_div.data("options").size * 2
     block_div.data('editing', nval)
+    block_div.data("options").onStartEdit.call(block_div, block_div.data('editing'));
   else
     stopEdit(block_div)
   updateEditView(block_div)
@@ -51,6 +52,7 @@ stopEdit = (block_div) ->
 startEdit = (block_div, i, j) ->
   block_div.data('editing', (i * block_div.data("options").sbsize + j) * 2)
   updateEditView(block_div)
+  block_div.data("options").onStartEdit.call(block_div, block_div.data('editing'));
 
 $.fn.hexeditor = (options) ->
   defaults =
@@ -59,6 +61,7 @@ $.fn.hexeditor = (options) ->
     numberIsLine : false
     getByte: (i,j) -> 0
     postLine: (i) -> ""
+    onStartEdit: (d) -> console.log(d)
   options = $.extend(defaults, options)
 
   getLineNum = (i, options) ->
@@ -183,6 +186,7 @@ $.fn.mmixmemeditor = (options) ->
           line_div2.removeClass('updated')
         1000
       )
+      obj.data("options").onStartEdit.call(obj, data.i);
   )
 
   this.hexeditor(options)

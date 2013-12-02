@@ -165,9 +165,57 @@ class shared.OctaByte
   assign: (b) ->
     @hbyte = b.hbyte
     @lbyte = b.lbyte
-  toString: () ->
-    h = shared.addLeadZero(@getH().toString(16) , 4)
-    mh = shared.addLeadZero(@getMH().toString(16) , 4)
-    ml = shared.addLeadZero(@getML().toString(16) , 4)
-    l = shared.addLeadZero(@getL().toString(16) , 4)
-    return h + mh + ml + l
+  toString: (type = "hex") ->
+    if (type is "hex")
+      h = shared.addLeadZero(@getH().toString(16) , 4)
+      mh = shared.addLeadZero(@getMH().toString(16) , 4)
+      ml = shared.addLeadZero(@getML().toString(16) , 4)
+      l = shared.addLeadZero(@getL().toString(16) , 4)
+      return h + mh + ml + l
+    else if type is "dec_unsigned"
+      t = new shared.OctaByte(@.hbyte, @.lbyte);
+      return "0" if t.lbyte is 0 and t.hbyte is 0
+      tstr = "";
+      while not (t.lbyte is 0 and t.hbyte is 0)
+        tstr = ( (t.hbyte % 10 >>> 0) * Math.pow(2,32) + t.lbyte ).toString(10).substr(-1) + tstr;
+        t.lbyte = (((t.hbyte % 10 >>> 0) * Math.pow(2,32) + t.lbyte) / 10 >>> 0);
+        t.hbyte = t.hbyte / 10 >>> 0;
+      return tstr
+    else if type is "dec_signed"
+      t = new shared.OctaByte(@.hbyte, @.lbyte);
+      return "0" if t.lbyte is 0 and t.hbyte is 0
+      t_is_neg = t.is_neg()
+      if t_is_neg
+        t = t.neg().add(1)
+
+      tstr = "";
+      while not (t.lbyte is 0 and t.hbyte is 0)
+        tstr = ( (t.hbyte % 10 >>> 0) * Math.pow(2,32) + t.lbyte ).toString(10).substr(-1) + tstr;
+        t.lbyte = (((t.hbyte % 10 >>> 0) * Math.pow(2,32) + t.lbyte) / 10 >>> 0);
+        t.hbyte = t.hbyte / 10 >>> 0;
+      if t_is_neg
+        return '-'+tstr
+      else
+        return tstr
+
+  assignFromString: (value, type = "hex") ->
+    @.lbyte = 0;
+    @.hbyte = 0;
+    if type is "hex"
+    else if type is "dec_unsigned"
+      for i in [0...value.length]
+        @.hbyte = @.hbyte * 10 + ((@.lbyte * 10) / Math.pow(2,32) >>> 0)
+        @.lbyte = (@.lbyte * 10) >>> 0
+        @.lbyte += parseInt(value[i])
+    else if type is "dec_signed"
+      isneg = false;
+      if value.charAt(0) is '-'
+        isneg = true;
+        value = value.substring(1)
+      for i in [0...value.length]
+        @.hbyte = @.hbyte * 10 + ((@.lbyte * 10) / Math.pow(2,32) >>> 0)
+        @.lbyte = (@.lbyte * 10) >>> 0
+        @.lbyte += parseInt(value[i])
+      if isneg
+        @.assign(@.sub(1).neg())
+

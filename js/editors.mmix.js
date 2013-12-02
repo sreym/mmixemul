@@ -37,6 +37,7 @@
     nval = block_div.data('editing') + i;
     if ((0 <= nval && nval < block_div.data("options").size * 2)) {
       block_div.data('editing', nval);
+      block_div.data("options").onStartEdit.call(block_div, block_div.data('editing'));
     } else {
       stopEdit(block_div);
     }
@@ -68,7 +69,8 @@
 
   startEdit = function(block_div, i, j) {
     block_div.data('editing', (i * block_div.data("options").sbsize + j) * 2);
-    return updateEditView(block_div);
+    updateEditView(block_div);
+    return block_div.data("options").onStartEdit.call(block_div, block_div.data('editing'));
   };
 
   $.fn.hexeditor = function(options) {
@@ -82,6 +84,9 @@
       },
       postLine: function(i) {
         return "";
+      },
+      onStartEdit: function(d) {
+        return console.log(d);
       }
     };
     options = $.extend(defaults, options);
@@ -216,10 +221,11 @@
         if (data.size === 8) {
           line_div2.addClass('updated');
         }
-        return setTimeout(function() {
+        setTimeout(function() {
           line_div.removeClass('updated');
           return line_div2.removeClass('updated');
         }, 1000);
+        return obj.data("options").onStartEdit.call(obj, data.i);
       }
     });
     this.hexeditor(options);

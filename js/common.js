@@ -264,13 +264,84 @@
       return this.lbyte = b.lbyte;
     };
 
-    OctaByte.prototype.toString = function() {
-      var h, l, mh, ml;
-      h = shared.addLeadZero(this.getH().toString(16), 4);
-      mh = shared.addLeadZero(this.getMH().toString(16), 4);
-      ml = shared.addLeadZero(this.getML().toString(16), 4);
-      l = shared.addLeadZero(this.getL().toString(16), 4);
-      return h + mh + ml + l;
+    OctaByte.prototype.toString = function(type) {
+      var h, l, mh, ml, t, t_is_neg, tstr;
+      if (type == null) {
+        type = "hex";
+      }
+      if (type === "hex") {
+        h = shared.addLeadZero(this.getH().toString(16), 4);
+        mh = shared.addLeadZero(this.getMH().toString(16), 4);
+        ml = shared.addLeadZero(this.getML().toString(16), 4);
+        l = shared.addLeadZero(this.getL().toString(16), 4);
+        return h + mh + ml + l;
+      } else if (type === "dec_unsigned") {
+        t = new shared.OctaByte(this.hbyte, this.lbyte);
+        if (t.lbyte === 0 && t.hbyte === 0) {
+          return "0";
+        }
+        tstr = "";
+        while (!(t.lbyte === 0 && t.hbyte === 0)) {
+          tstr = ((t.hbyte % 10 >>> 0) * Math.pow(2, 32) + t.lbyte).toString(10).substr(-1) + tstr;
+          t.lbyte = ((t.hbyte % 10 >>> 0) * Math.pow(2, 32) + t.lbyte) / 10 >>> 0;
+          t.hbyte = t.hbyte / 10 >>> 0;
+        }
+        return tstr;
+      } else if (type === "dec_signed") {
+        t = new shared.OctaByte(this.hbyte, this.lbyte);
+        if (t.lbyte === 0 && t.hbyte === 0) {
+          return "0";
+        }
+        t_is_neg = t.is_neg();
+        if (t_is_neg) {
+          t = t.neg().add(1);
+        }
+        tstr = "";
+        while (!(t.lbyte === 0 && t.hbyte === 0)) {
+          tstr = ((t.hbyte % 10 >>> 0) * Math.pow(2, 32) + t.lbyte).toString(10).substr(-1) + tstr;
+          t.lbyte = ((t.hbyte % 10 >>> 0) * Math.pow(2, 32) + t.lbyte) / 10 >>> 0;
+          t.hbyte = t.hbyte / 10 >>> 0;
+        }
+        if (t_is_neg) {
+          return '-' + tstr;
+        } else {
+          return tstr;
+        }
+      }
+    };
+
+    OctaByte.prototype.assignFromString = function(value, type) {
+      var i, isneg, _i, _j, _ref, _ref1, _results;
+      if (type == null) {
+        type = "hex";
+      }
+      this.lbyte = 0;
+      this.hbyte = 0;
+      if (type === "hex") {
+
+      } else if (type === "dec_unsigned") {
+        _results = [];
+        for (i = _i = 0, _ref = value.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+          this.hbyte = this.hbyte * 10 + ((this.lbyte * 10) / Math.pow(2, 32) >>> 0);
+          this.lbyte = (this.lbyte * 10) >>> 0;
+          _results.push(this.lbyte += parseInt(value[i]));
+        }
+        return _results;
+      } else if (type === "dec_signed") {
+        isneg = false;
+        if (value.charAt(0) === '-') {
+          isneg = true;
+          value = value.substring(1);
+        }
+        for (i = _j = 0, _ref1 = value.length; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+          this.hbyte = this.hbyte * 10 + ((this.lbyte * 10) / Math.pow(2, 32) >>> 0);
+          this.lbyte = (this.lbyte * 10) >>> 0;
+          this.lbyte += parseInt(value[i]);
+        }
+        if (isneg) {
+          return this.assign(this.sub(1).neg());
+        }
+      }
     };
 
     return OctaByte;

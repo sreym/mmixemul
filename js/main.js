@@ -27,7 +27,109 @@
       data: shared.mem,
       postLine: function(i) {
         return "<span class='desc' view='asm'>" + (shared.proc.disassemble(shared.mem.getTetra(i * 4))) + " (asm)</span>";
+      },
+      onStartEdit: function(num) {
+        var val;
+        val = shared.mem.getByte(num / 2 | 0);
+        $("#uint8_editor").val(val);
+        if ((val & 0x80) !== 0) {
+          val ^= 0xFF;
+          val++;
+          val *= -1;
+        }
+        $("#int8_editor").val(val);
+        val = shared.mem.getWyde(num / 2 | 0);
+        $("#uint16_editor").val(val);
+        if ((val & 0x8000) !== 0) {
+          val ^= 0xFFFF;
+          val++;
+          val *= -1;
+        }
+        $("#int16_editor").val(val);
+        val = shared.mem.getTetra(num / 2 | 0);
+        $("#uint32_editor").val(val);
+        if ((val & 0x80000000) !== 0) {
+          val ^= 0xFFFFFFFF;
+          val++;
+          val *= -1;
+        }
+        $("#int32_editor").val(val);
+        $("#uint64_editor").val(shared.mem.getOcta(num / 2 | 0).toString("dec_unsigned"));
+        $("#int64_editor").val(shared.mem.getOcta(num / 2 | 0).toString("dec_signed"));
+        return $("#double_editor").val(shared.mem.getOcta(num / 2 | 0).getDouble());
       }
+    });
+    $('#int8_editor').focus(function() {
+      $(this).data("editing", $('#memed').data('editing'));
+      return $('#memed').data("editing", false);
+    });
+    $("#uint8_editor").focus(function() {
+      $(this).data("editing", $('#memed').data('editing'));
+      return $('#memed').data("editing", false);
+    });
+    $('#int16_editor').focus(function() {
+      $(this).data("editing", $('#memed').data('editing'));
+      return $('#memed').data("editing", false);
+    });
+    $("#uint16_editor").focus(function() {
+      $(this).data("editing", $('#memed').data('editing'));
+      return $('#memed').data("editing", false);
+    });
+    $('#int32_editor').focus(function() {
+      $(this).data("editing", $('#memed').data('editing'));
+      return $('#memed').data("editing", false);
+    });
+    $("#uint32_editor").focus(function() {
+      $(this).data("editing", $('#memed').data('editing'));
+      return $('#memed').data("editing", false);
+    });
+    $('#int64_editor').focus(function() {
+      $(this).data("editing", $('#memed').data('editing'));
+      return $('#memed').data("editing", false);
+    });
+    $("#uint64_editor").focus(function() {
+      $(this).data("editing", $('#memed').data('editing'));
+      return $('#memed').data("editing", false);
+    });
+    $("#double_editor").focus(function() {
+      $(this).data("editing", $('#memed').data('editing'));
+      return $('#memed').data("editing", false);
+    });
+    $('#int8_editor').change(function() {
+      return shared.mem.setByte($(this).data("editing") / 2 | 0, parseInt($(this).val(), 10));
+    });
+    $('#uint8_editor').change(function() {
+      return shared.mem.setByte($(this).data("editing") / 2 | 0, parseInt($(this).val(), 10));
+    });
+    $('#int16_editor').change(function() {
+      return shared.mem.setWyde($(this).data("editing") / 2 | 0, parseInt($(this).val(), 10));
+    });
+    $('#uint16_editor').change(function() {
+      return shared.mem.setWyde($(this).data("editing") / 2 | 0, parseInt($(this).val(), 10));
+    });
+    $('#int32_editor').change(function() {
+      return shared.mem.setTetra($(this).data("editing") / 2 | 0, parseInt($(this).val(), 10));
+    });
+    $('#uint32_editor').change(function() {
+      return shared.mem.setTetra($(this).data("editing") / 2 | 0, parseInt($(this).val(), 10));
+    });
+    $('#int64_editor').change(function() {
+      var oct;
+      oct = new shared.OctaByte(0, 0);
+      oct.assignFromString($(this).val(), "dec_signed");
+      return shared.mem.setOcta($(this).data("editing") / 2 | 0, oct);
+    });
+    $('#uint64_editor').change(function() {
+      var oct;
+      oct = new shared.OctaByte(0, 0);
+      oct.assignFromString($(this).val(), "dec_unsigned");
+      return shared.mem.setOcta($(this).data("editing") / 2 | 0, oct);
+    });
+    $('#double_editor').change(function() {
+      var oct;
+      oct = new shared.OctaByte(0, 0);
+      oct.setDouble(parseFloat($(this).val()));
+      return shared.mem.setOcta($(this).data("editing") / 2 | 0, oct);
     });
     linetypes = ["asm", "uint32", "int32", "double", "bool", "ascii"];
     updateMemHexLine = function(line) {

@@ -20,7 +20,59 @@ $().ready () ->
     data: shared.mem
     postLine: (i) ->
       "<span class='desc' view='asm'>#{shared.proc.disassemble(shared.mem.getTetra(i * 4))} (asm)</span>"
+    onStartEdit: (num) ->
+      val = shared.mem.getByte(num / 2 | 0);
+      $("#uint8_editor").val(val);
+      if (val & 0x80) isnt 0 then val ^= 0xFF; val++; val *= -1;
+      $("#int8_editor").val(val);
+
+      val = shared.mem.getWyde(num / 2 | 0);
+      $("#uint16_editor").val(val);
+      if (val & 0x8000) isnt 0 then val ^= 0xFFFF; val++; val *= -1;
+      $("#int16_editor").val(val);
+
+      val = shared.mem.getTetra(num / 2 | 0);
+      $("#uint32_editor").val(val);
+      if (val & 0x80000000) isnt 0 then val ^= 0xFFFFFFFF; val++; val *= -1;
+      $("#int32_editor").val(val);
+
+      $("#uint64_editor").val(shared.mem.getOcta(num / 2 | 0).toString("dec_unsigned"));
+      $("#int64_editor").val(shared.mem.getOcta(num / 2 | 0).toString("dec_signed"));
+
+      $("#double_editor").val(shared.mem.getOcta(num / 2 | 0).getDouble());
   )
+
+  $('#int8_editor').focus(()->$(this).data("editing",$('#memed').data('editing'));$('#memed').data("editing", false));
+  $("#uint8_editor").focus(()->$(this).data("editing",$('#memed').data('editing'));$('#memed').data("editing", false));
+  $('#int16_editor').focus(()->$(this).data("editing",$('#memed').data('editing'));$('#memed').data("editing", false));
+  $("#uint16_editor").focus(()->$(this).data("editing",$('#memed').data('editing'));$('#memed').data("editing", false));
+  $('#int32_editor').focus(()->$(this).data("editing",$('#memed').data('editing'));$('#memed').data("editing", false));
+  $("#uint32_editor").focus(()->$(this).data("editing",$('#memed').data('editing'));$('#memed').data("editing", false));
+  $('#int64_editor').focus(()->$(this).data("editing",$('#memed').data('editing'));$('#memed').data("editing", false));
+  $("#uint64_editor").focus(()->$(this).data("editing",$('#memed').data('editing'));$('#memed').data("editing", false));
+  $("#double_editor").focus(()->$(this).data("editing",$('#memed').data('editing'));$('#memed').data("editing", false));
+
+  $('#int8_editor').change(()-> shared.mem.setByte($(this).data("editing") / 2 | 0, parseInt($(this).val(),10)) );
+  $('#uint8_editor').change(()-> shared.mem.setByte($(this).data("editing") / 2 | 0, parseInt($(this).val(),10)) );
+  $('#int16_editor').change(()-> shared.mem.setWyde($(this).data("editing") / 2 | 0, parseInt($(this).val(),10)) );
+  $('#uint16_editor').change(()-> shared.mem.setWyde($(this).data("editing") / 2 | 0, parseInt($(this).val(),10)) );
+  $('#int32_editor').change(()-> shared.mem.setTetra($(this).data("editing") / 2 | 0, parseInt($(this).val(),10)) );
+  $('#uint32_editor').change(()-> shared.mem.setTetra($(this).data("editing") / 2 | 0, parseInt($(this).val(),10)) );
+  $('#int64_editor').change(()->
+    oct = new shared.OctaByte(0,0);
+    oct.assignFromString($(this).val(), "dec_signed");
+    shared.mem.setOcta($(this).data("editing") / 2 | 0, oct);
+  );
+  $('#uint64_editor').change(()->
+    oct = new shared.OctaByte(0,0);
+    oct.assignFromString($(this).val(), "dec_unsigned");
+    shared.mem.setOcta($(this).data("editing") / 2 | 0, oct);
+  );
+  $('#double_editor').change(()->
+    oct = new shared.OctaByte(0,0);
+    oct.setDouble(parseFloat($(this).val()));
+    shared.mem.setOcta($(this).data("editing") / 2 | 0, oct);
+  );
 
   linetypes = ["asm", "uint32", "int32", "double", "bool", "ascii"]
 
@@ -125,6 +177,8 @@ $().ready () ->
   $('#rawEditor_cancel').click( ()->
     toggleRawEditor()
   )
+
+
 
 
 

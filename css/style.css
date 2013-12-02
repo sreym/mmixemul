@@ -105,3 +105,21 @@ html, body {
 #rawText {
     font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, monospace, serif;
 }
+
+.value_editor {
+    border-top: 1px solid #808080;
+    background-color: #d9d9d9;
+    margin-top: 10pt;
+    padding: 5pt;
+
+}
+
+.value_editor label {
+    display: inline-block;
+    width: 200pt;
+}
+
+.value_editor label input {
+    float: right;
+    margin-right: 40pt;
+}
