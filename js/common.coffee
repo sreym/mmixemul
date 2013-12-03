@@ -166,7 +166,7 @@ class shared.OctaByte
     @hbyte = b.hbyte
     @lbyte = b.lbyte
   toString: (type = "hex") ->
-    if (type is "hex")
+    if (type is "hex" or type is 16)
       h = shared.addLeadZero(@getH().toString(16) , 4)
       mh = shared.addLeadZero(@getMH().toString(16) , 4)
       ml = shared.addLeadZero(@getML().toString(16) , 4)

@@ -269,7 +269,7 @@
       if (type == null) {
         type = "hex";
       }
-      if (type === "hex") {
+      if (type === "hex" || type === 16) {
         h = shared.addLeadZero(this.getH().toString(16), 4);
         mh = shared.addLeadZero(this.getMH().toString(16), 4);
         ml = shared.addLeadZero(this.getML().toString(16), 4);

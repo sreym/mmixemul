@@ -566,6 +566,16 @@ class shared.MMIXCommands
     addr = $Y.add($Z)
     @mem.setOcta(addr.lbyte, $X)
 
+
+  # B0 - BF
+  #stsf: ($X, $Y, $Z) =>
+  stht: ($X, $Y, $Z) =>
+    addr = $Y.add($Z)
+    @mem.setTetra(addr.lbyte, $X.hbyte & 0xFFFFFFFF)
+  stco: (X, $Y, $Z) =>
+    addr = $Y.add($Z)
+    @mem.setOcta(addr.lbyte, new shared.OctaByte(0, X) )
+
   # C0 - CF
   or : ($X, $Y, Z) =>
     if not (Z instanceof shared.OctaByte)

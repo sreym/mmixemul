@@ -42,6 +42,8 @@
       this.nor = __bind(this.nor, this);
       this.orn = __bind(this.orn, this);
       this.or = __bind(this.or, this);
+      this.stco = __bind(this.stco, this);
+      this.stht = __bind(this.stht, this);
       this.stou = __bind(this.stou, this);
       this.sttu = __bind(this.sttu, this);
       this.stt = __bind(this.stt, this);
@@ -837,6 +839,18 @@
       var addr;
       addr = $Y.add($Z);
       return this.mem.setOcta(addr.lbyte, $X);
+    };
+
+    MMIXCommands.prototype.stht = function($X, $Y, $Z) {
+      var addr;
+      addr = $Y.add($Z);
+      return this.mem.setTetra(addr.lbyte, $X.hbyte & 0xFFFFFFFF);
+    };
+
+    MMIXCommands.prototype.stco = function(X, $Y, $Z) {
+      var addr;
+      addr = $Y.add($Z);
+      return this.mem.setOcta(addr.lbyte, new shared.OctaByte(0, X));
     };
 
     MMIXCommands.prototype.or = function($X, $Y, Z) {

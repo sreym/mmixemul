@@ -82,7 +82,9 @@
       Ror: new Object(),
       Rob: new Object(),
       Rbr: new Object(),
-      Rbb: new Object()
+      Rbb: new Object(),
+      brr: new Object(),
+      brb: new Object()
     };
 
     MMIXProcessor.prototype.addcomc = 0;
@@ -259,6 +261,12 @@
       this.addcom(0xAD, "sto", octypes.rrb, mmixcoms.stou);
       this.addcom(0xAE, "stou", octypes.rrr, mmixcoms.stou);
       this.addcom(0xAF, "stou", octypes.rrb, mmixcoms.stou);
+      this.addcom(0xB2, "stht", octypes.rrr, mmixcoms.stht);
+      this.addcom(0xB3, "stht", octypes.rrb, mmixcoms.stht);
+      this.addcom(0xB4, "stco", octypes.brr, mmixcoms.stco);
+      this.addcom(0xB5, "stco", octypes.brb, mmixcoms.stco);
+      this.addcom(0xB6, "stunc", octypes.rrr, mmixcoms.stou);
+      this.addcom(0xB7, "stunc", octypes.rrb, mmixcoms.stou);
       this.addcom(0xC0, "or", octypes.Rrr, mmixcoms.or);
       this.addcom(0xC1, "or", octypes.Rrb, mmixcoms.or);
       this.addcom(0xC2, "orn", octypes.Rrr, mmixcoms.orn);
@@ -356,6 +364,10 @@
         return this.comsnames[opcode] + " $" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(), 2) + " 0x" + shared.addLeadZero((command >>> 8 & 0xFF).toString(16).toUpperCase(), 2) + " 0x" + shared.addLeadZero((command >>> 0 & 0xFF).toString(16).toUpperCase(), 2);
       } else if (this.comstypes[opcode] === octypes.Rbr) {
         return this.comsnames[opcode] + " $" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(), 2) + " 0x" + shared.addLeadZero((command >>> 8 & 0xFF).toString(16).toUpperCase(), 2) + " $" + shared.addLeadZero((command >>> 0 & 0xFF).toString(16).toUpperCase(), 2);
+      } else if (this.comstypes[opcode] === octypes.brr) {
+        return this.comsnames[opcode] + " 0x" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(), 2) + " $" + shared.addLeadZero((command >>> 8 & 0xFF).toString(16).toUpperCase(), 2) + " $" + shared.addLeadZero((command >>> 0 & 0xFF).toString(16).toUpperCase(), 2);
+      } else if (this.comstypes[opcode] === octypes.brb) {
+        return this.comsnames[opcode] + " 0x" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(), 2) + " $" + shared.addLeadZero((command >>> 8 & 0xFF).toString(16).toUpperCase(), 2) + " 0x" + shared.addLeadZero((command >>> 0 & 0xFF).toString(16).toUpperCase(), 2);
       } else {
         return "not implemented yet " + shared.addLeadZero(opcode.toString(16).toUpperCase(), 2);
       }
@@ -441,6 +453,19 @@
         $X = this.regs.getOcta($X_i);
         this.coms[opcode]($X, Y, Z);
         return this.regs.setOcta($X_i, $X);
+      } else if (this.comstypes[opcode] === octypes.brr) {
+        X = (command >>> 16) & 0xFF;
+        $Y_i = (command >>> 8) & 0xFF;
+        $Z_i = (command >>> 0) & 0xFF;
+        $Y = this.regs.getOcta($Y_i);
+        $Z = this.regs.getOcta($Z_i);
+        return this.coms[opcode](X, $Y, $Z);
+      } else if (this.comstypes[opcode] === octypes.brb) {
+        X = (command >>> 16) & 0xFF;
+        $Y_i = (command >>> 8) & 0xFF;
+        Z = (command >>> 0) & 0xFF;
+        $Y = this.regs.getOcta($Y_i);
+        return this.coms[opcode](X, $Y, Z);
       } else {
         throw "not implemented";
       }

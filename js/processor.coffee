@@ -50,6 +50,8 @@ class shared.MMIXProcessor
     Rob: new Object() # read-write Register, then rOunding setting and byte
     Rbr: new Object() # read-write Register, then Byte and readonly Register
     Rbb: new Object() # read-write Register and two Bytes
+    brr: new Object() # write constant octabye
+    brb: new Object() # write constant octabye (immediate)
 
   addcomc: 0
 
@@ -254,6 +256,16 @@ class shared.MMIXProcessor
     @addcom(0xAE, "stou",   octypes.rrr, mmixcoms.stou)
     @addcom(0xAF, "stou",   octypes.rrb, mmixcoms.stou)
 
+    #@addcom(0xB0, "stsf",   octypes.rrr, mmixcoms.stsf)
+    #@addcom(0xB1, "stsf",   octypes.rrb, mmixcoms.stsf)
+    @addcom(0xB2, "stht",   octypes.rrr, mmixcoms.stht)
+    @addcom(0xB3, "stht",   octypes.rrb, mmixcoms.stht)
+
+    @addcom(0xB4, "stco",   octypes.brr, mmixcoms.stco)
+    @addcom(0xB5, "stco",   octypes.brb, mmixcoms.stco)
+    @addcom(0xB6, "stunc",  octypes.rrr, mmixcoms.stou)
+    @addcom(0xB7, "stunc",  octypes.rrb, mmixcoms.stou)
+
     @addcom(0xC0, "or",     octypes.Rrr, mmixcoms.or)
     @addcom(0xC1, "or",     octypes.Rrb, mmixcoms.or)
     @addcom(0xC2, "orn",    octypes.Rrr, mmixcoms.orn)
@@ -372,6 +384,16 @@ class shared.MMIXProcessor
       " $" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(),2) +
       " 0x" + shared.addLeadZero((command >>>  8 & 0xFF).toString(16).toUpperCase(),2) +
       " $" + shared.addLeadZero((command >>>  0 & 0xFF).toString(16).toUpperCase(),2)
+    else if @comstypes[opcode] is octypes.brr
+      @comsnames[opcode] +
+      " 0x" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(),2) +
+      " $" + shared.addLeadZero((command >>>  8 & 0xFF).toString(16).toUpperCase(),2) +
+      " $" + shared.addLeadZero((command >>>  0 & 0xFF).toString(16).toUpperCase(),2)
+    else if @comstypes[opcode] is octypes.brb
+      @comsnames[opcode] +
+      " 0x" + shared.addLeadZero((command >>> 16 & 0xFF).toString(16).toUpperCase(),2) +
+      " $" + shared.addLeadZero((command >>>  8 & 0xFF).toString(16).toUpperCase(),2) +
+      " 0x" + shared.addLeadZero((command >>>  0 & 0xFF).toString(16).toUpperCase(),2)
     else
       "not implemented yet " + shared.addLeadZero(opcode.toString(16).toUpperCase(),2)
 
@@ -450,6 +472,19 @@ class shared.MMIXProcessor
       $X = @regs.getOcta($X_i)
       @coms[opcode]($X, Y, Z)
       @regs.setOcta($X_i, $X)
+    else if @comstypes[opcode] is octypes.brr
+      X = (command >>> 16) & 0xFF
+      $Y_i = (command >>>  8) & 0xFF
+      $Z_i = (command >>>  0) & 0xFF
+      $Y = @regs.getOcta($Y_i)
+      $Z = @regs.getOcta($Z_i)
+      @coms[opcode](X, $Y, $Z)
+    else if @comstypes[opcode] is octypes.brb
+      X = (command >>> 16) & 0xFF
+      $Y_i = (command >>>  8) & 0xFF
+      Z = (command >>>  0) & 0xFF
+      $Y = @regs.getOcta($Y_i)
+      @coms[opcode](X, $Y, Z)
     else
       throw "not implemented"
 
